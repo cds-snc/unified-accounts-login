@@ -39,6 +39,8 @@ export async function sendNotifyEmail(
 
   if (!response.ok) {
     const body = await response.text().catch(() => "(no body)");
-    throw new Error(`GC Notify request failed: ${response.status} ${response.statusText} — ${body}`);
+    throw new Error(
+      `GC Notify request failed: ${response.status} ${response.statusText} — ${body}`
+    );
   }
 }

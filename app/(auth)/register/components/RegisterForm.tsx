@@ -149,9 +149,7 @@ export function RegisterForm({ organization, requestId }: Props) {
 
         <p className="-mt-2 mb-10">
           {t("terms.agreement")}
-          <Link href={`${APP_URL}/${i18n.language}/terms-of-use`}>
-            {t("terms.linkText")}
-          </Link>
+          <Link href={`${APP_URL}/${i18n.language}/terms-of-use`}>{t("terms.linkText")}</Link>
         </p>
 
         <div>

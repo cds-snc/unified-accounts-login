@@ -17,11 +17,7 @@ export const FooterLinks = () => {
 
   return (
     <span className="mr-10 inline-block">
-      <a
-        className="whitespace-nowrap"
-        href={`${APP_URL}/${locale}/about`}
-        target="_blank"
-      >
+      <a className="whitespace-nowrap" href={`${APP_URL}/${locale}/about`} target="_blank">
         <I18n i18nKey="about.desc" namespace="footer" />
       </a>
       <BulletPoint />

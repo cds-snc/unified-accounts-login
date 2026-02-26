@@ -9,8 +9,8 @@ import { headers } from "next/headers";
  * Internal Aliases
  *--------------------------------------------*/
 import { getPasswordResetTemplate } from "@lib/emailTemplates";
-import { sendNotifyEmail } from "@lib/notify";
 import { logMessage } from "@lib/logger";
+import { sendNotifyEmail } from "@lib/notify";
 import { getServiceUrlFromHeaders } from "@lib/service-url";
 import { listUsers, passwordResetWithReturn } from "@lib/zitadel";
 type SendResetCodeCommand = {

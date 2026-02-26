@@ -4,3 +4,5 @@ ignoredBuiltDependencies:
   - '@parcel/watcher'
   - sharp
   - unrs-resolver
+
+minimumReleaseAge: 10080 # 1 week in mins
