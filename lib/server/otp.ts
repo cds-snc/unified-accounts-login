@@ -4,7 +4,6 @@
  * Framework and Third-Party
  *--------------------------------------------*/
 import { headers } from "next/headers";
-import { GCNotifyConnector } from "@gcforms/connectors";
 import { create, Duration } from "@zitadel/client";
 import { RequestChallengesSchema } from "@zitadel/proto/zitadel/session/v2/challenge_pb";
 
@@ -12,6 +11,7 @@ import { RequestChallengesSchema } from "@zitadel/proto/zitadel/session/v2/chall
  * Internal Aliases
  *--------------------------------------------*/
 import { getSecurityCodeTemplate } from "@lib/emailTemplates";
+import { sendNotifyEmail } from "@lib/notify";
 import { setSessionAndUpdateCookie } from "@lib/server/cookie";
 import { getServiceUrlFromHeaders } from "@lib/service-url";
 import { getLoginSettings } from "@lib/zitadel";
@@ -118,8 +118,7 @@ export async function sendOtpEmail(command: SendOtpEmailCommand) {
   }
 
   try {
-    const gcNotify = GCNotifyConnector.default(apiKey);
-    await gcNotify.sendEmail(userEmail, templateId, getSecurityCodeTemplate(otpCode));
+    await sendNotifyEmail(apiKey, userEmail, templateId, getSecurityCodeTemplate(otpCode));
 
     return {
       success: true,

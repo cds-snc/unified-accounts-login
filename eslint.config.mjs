@@ -75,8 +75,6 @@ const eslintConfig = defineConfig([
           "(gc\\-).*",
           "(gcds\\-).*",
           "label--required",
-          "form-builder",
-          "form-builder-editor",
           "page-container",
           "visually-hidden",
           "buttons",

@@ -20,7 +20,7 @@ import { SubmitButtonAction } from "@components/ui/button/SubmitButton";
 import { Alert, ErrorStatus } from "@components/ui/form";
 import { CodeEntry } from "@components/ui/form/CodeEntry";
 import { ErrorSummary } from "@components/ui/form/ErrorSummary";
-const SUPPORT_URL = process.env.NEXT_PUBLIC_FORMS_PRODUCTION_URL || "";
+const SUPPORT_URL = process.env.NEXT_PUBLIC_APP_URL || "";
 
 type FormState = {
   error?: string;

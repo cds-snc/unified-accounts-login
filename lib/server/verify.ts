@@ -4,7 +4,6 @@
  * Framework and Third-Party
  *--------------------------------------------*/
 import { cookies, headers } from "next/headers";
-import { GCNotifyConnector } from "@gcforms/connectors";
 import { create } from "@zitadel/client";
 import { Session } from "@zitadel/proto/zitadel/session/v2/session_pb";
 import { ChecksSchema } from "@zitadel/proto/zitadel/session/v2/session_service_pb";
@@ -15,6 +14,7 @@ import crypto from "crypto";
  * Internal Aliases
  *--------------------------------------------*/
 import { getPasswordChangedTemplate, getSecurityCodeTemplate } from "@lib/emailTemplates";
+import { sendNotifyEmail } from "@lib/notify";
 import {
   addOTPEmail,
   getLoginSettings,
@@ -308,8 +308,8 @@ export async function sendVerificationEmail(command: SendVerificationEmailComman
   }
 
   try {
-    const gcNotify = GCNotifyConnector.default(apiKey);
-    await gcNotify.sendEmail(
+    await sendNotifyEmail(
+      apiKey,
       email,
       templateId,
       getSecurityCodeTemplate(codeResponse.verificationCode)
@@ -361,8 +361,7 @@ export async function sendPasswordChangedEmail(command: SendPasswordChangedEmail
   }
 
   try {
-    const gcNotify = GCNotifyConnector.default(apiKey);
-    await gcNotify.sendEmail(email, templateId, getPasswordChangedTemplate());
+    await sendNotifyEmail(apiKey, email, templateId, getPasswordChangedTemplate());
 
     return { success: true };
   } catch (error) {

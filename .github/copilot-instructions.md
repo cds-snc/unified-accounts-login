@@ -1,7 +1,7 @@
-# GC Forms Identity Portal - Copilot Instructions
+# Unified Accounts Login - Copilot Instructions
 
 ## Overview
-This is a **Next.js 16 App Router** identity portal for GC Forms, integrating with **Zitadel** for authentication. It handles login, registration, password management, and MFA (TOTP, U2F, Email OTP). Supports both OIDC and SAML authentication flows.
+This is a **Next.js 16 App Router** identity portal (Unified Accounts Login / Connexion - Comptes unifiés), integrating with **Zitadel** for authentication. It handles login, registration, password management, and MFA (TOTP, U2F, Email OTP). Supports both OIDC and SAML authentication flows.
 
 ## MCP Tools
 - `ask_question`: Use for clarifications or when uncertain about user intent.
@@ -71,10 +71,12 @@ pnpm type-check   # TypeScript validation
 ## Environment
 - `ZITADEL_API_URL`: Zitadel instance URL
 - `NEXT_PUBLIC_BASE_PATH`: URL base path (default: `/ui/v2` in Docker)
+- `NEXT_PUBLIC_APP_URL`: Base URL of the product application this portal serves (used for About/Terms/Support links)
 - Organization ID: hardcoded in [constants/config.ts](../constants/config.ts)
 
 ## Important Files
 - [lib/zitadel.ts](../lib/zitadel.ts) - All Zitadel API functions (search by function name)
 - [lib/session.ts](../lib/session.ts) - Session validation and loading
 - [lib/cookies.ts](../lib/cookies.ts) - Cookie management (server-only)
+- [lib/notify.ts](../lib/notify.ts) - GC Notify REST API helper (replaces @gcforms/connectors)
 - [components/mfa/](../components/mfa/) - MFA component patterns

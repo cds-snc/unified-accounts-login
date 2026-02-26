@@ -14,7 +14,7 @@ import { Footer } from "@components/layout/footer/Footer";
 import { FooterLinks } from "@components/layout/footer/FooterLinks";
 import { GcdsHeader } from "@components/layout/gcds-header/GcdsHeader";
 import { ToastContainer } from "@components/ui/toast/Toast";
-const FORMS_PRODUCTION_URL = process.env.NEXT_PUBLIC_FORMS_PRODUCTION_URL || "";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "";
 
 export default async function AuthLayout({ children }: { children: React.ReactNode }) {
   const {
@@ -37,7 +37,7 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
             <main id="content">
               <a
                 className="mb-6 mr-10 inline-flex no-underline focus:bg-white"
-                href={`${FORMS_PRODUCTION_URL}/${language}/about`}
+                href={`${APP_URL}/${language}/about`}
               >
                 <span className="">
                   <SiteLogo />

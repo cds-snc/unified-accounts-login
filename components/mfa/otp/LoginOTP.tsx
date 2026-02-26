@@ -24,7 +24,7 @@ import { ErrorSummary } from "@components/ui/form/ErrorSummary";
  * Local Relative
  *--------------------------------------------*/
 import { FormState, handleOTPFormSubmit, updateSessionForOTPChallenge } from "./action";
-const SUPPORT_URL = process.env.NEXT_PUBLIC_FORMS_PRODUCTION_URL || "";
+const SUPPORT_URL = process.env.NEXT_PUBLIC_APP_URL || "";
 
 export function LoginOTP({
   loginName,

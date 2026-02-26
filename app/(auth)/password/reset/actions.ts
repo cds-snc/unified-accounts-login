@@ -4,12 +4,12 @@
  * Framework and Third-Party
  *--------------------------------------------*/
 import { headers } from "next/headers";
-import { GCNotifyConnector } from "@gcforms/connectors";
 
 /*--------------------------------------------*
  * Internal Aliases
  *--------------------------------------------*/
 import { getPasswordResetTemplate } from "@lib/emailTemplates";
+import { sendNotifyEmail } from "@lib/notify";
 import { logMessage } from "@lib/logger";
 import { getServiceUrlFromHeaders } from "@lib/service-url";
 import { listUsers, passwordResetWithReturn } from "@lib/zitadel";
@@ -76,8 +76,7 @@ export const submitUserNameForm = async (
   }
 
   try {
-    const gcNotify = GCNotifyConnector.default(apiKey);
-    await gcNotify.sendEmail(email, templateId, getPasswordResetTemplate(resetCode));
+    await sendNotifyEmail(apiKey, email, templateId, getPasswordResetTemplate(resetCode));
   } catch (_error) {
     logMessage.error("Failed to send password reset email via GC Notify");
     return nonEnumeratingResponse;

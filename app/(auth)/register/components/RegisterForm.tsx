@@ -37,7 +37,7 @@ type Props = {
   requestId?: string;
 };
 
-const FORMS_PRODUCTION_URL = process.env.NEXT_PUBLIC_FORMS_PRODUCTION_URL || "";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "";
 
 export function RegisterForm({ organization, requestId }: Props) {
   const { t, i18n } = useTranslation(["register", "validation", "errorSummary", "common"]);
@@ -149,7 +149,7 @@ export function RegisterForm({ organization, requestId }: Props) {
 
         <p className="-mt-2 mb-10">
           {t("terms.agreement")}
-          <Link href={`${FORMS_PRODUCTION_URL}/${i18n.language}/terms-of-use`}>
+          <Link href={`${APP_URL}/${i18n.language}/terms-of-use`}>
             {t("terms.linkText")}
           </Link>
         </p>

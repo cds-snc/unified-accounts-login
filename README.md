@@ -1,18 +1,15 @@
-# Forms Account (Identity Portal)
+# Unified Accounts Login
 
-Next.js 16 App Router app for GC Forms identity flows (login, password, MFA, verification), integrated with Zitadel.
+Next.js 16 App Router app for [Unified Accounts](https://github.com/cds-snc/unified-accounts) identity flows (login, password, MFA, verification), integrated with Zitadel.
+
+:gem: This project is based on the work done by the GC Forms team on their [identity portal](https://github.com/cds-snc/forms-idp-user-portal).
 
 ## Quick start
 
-Install dependencies:
+Run locally on port 3002:
 
-```bash
+```sh
 pnpm install
-```
-
-Run locally (port 3002):
-
-```bash
 pnpm dev
 ```
 
@@ -20,7 +17,7 @@ Open: [http://localhost:3002](http://localhost:3002)
 
 ## Useful commands
 
-```bash
+```sh
 pnpm dev         # start dev server
 pnpm build       # production build
 pnpm start       # run production server
@@ -32,12 +29,8 @@ pnpm test        # run tests
 
 ## Required environment variables
 
-- `ZITADEL_API_URL`
-- `NEXT_PUBLIC_BASE_PATH`
+These can be seen in `.env.example`.  Before starting the app run the following and fill in your values:
 
-## Stack
-
-- Next.js 16
-- React 19
-- TypeScript
-- Tailwind + SCSS
+```sh
+cp .env.example .env
+```

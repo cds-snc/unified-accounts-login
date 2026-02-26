@@ -5,7 +5,7 @@
       "continue": "Continuer",
       "submit": "Soumettre"
     },
-    "title": "Formulaires GC",
+    "title": "Connexion - Comptes unifiés",
     "required": "obligatoire",
     "errorSummary": {
       "title": "Veuillez corriger les erreurs sur la page.",
@@ -30,8 +30,8 @@
   "footer": {
     "version": "Version",
     "about": {
-      "link": "https://articles.alpha.canada.ca/forms-formulaires/fr/?utm_source=FR_FormsFooter&utm_medium=Product&utm_campaign=forms_product",
-      "desc": "À propos de Formulaires GC"
+      "link": "https://numerique.canada.ca",
+      "desc": "À propos des Comptes unifiés"
     },
     "terms-and-conditions": {
       "link": "/fr/terms-and-conditions",
@@ -218,7 +218,7 @@
     },
     "reset": {
       "title": "Réinitialiser votre mot de passe",
-      "description": "Réinitialisez votre mot de passe pour continuer à utiliser Formulaires GC.",
+      "description": "Réinitialisez votre mot de passe pour continuer.",
       "submit": "Continuer",
       "labels": {
         "confirmationCode": "Code de confirmation"
@@ -319,7 +319,7 @@
     },
     "title": "Créer votre compte",
     "emailInputHint": "Utilisez une adresse courriel du gouvernement à laquelle vous seul avez accès, et non une boîte de réception partagée.",
-    "description": "We’re asking for your information again because we’re transferring all GC Forms accounts to a new authentication provider. [FR]",
+    "description": "Créez un compte pour accéder aux services Platforme.",
     "noMethodAvailableWarning": "Aucune méthode d'authentification disponible. Veuillez contacter votre administrateur.",
     "selectMethod": "Sélectionnez la méthode que vous souhaitez utiliser pour vous authentifier",
     "agreeTo": "Pour vous inscrire, vous devez accepter les conditions d'utilisation",
@@ -355,8 +355,8 @@
       "couldNotRegisterUser": "Impossible d'enregistrer le compte utilisateur"
     },
     "password": {
-      "title": "Password creation",
-      "description": "We're asking for your information again because we're transferring all GC Forms accounts to a new authentication provider.",
+      "title": "Création du mot de passe",
+      "description": "Créez un mot de passe pour sécuriser votre compte.",
       "errors": {
         "couldNotRegisterUser": "Impossible d'enregistrer le compte utilisateur"
       }

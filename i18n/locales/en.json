@@ -5,7 +5,7 @@
       "continue": "Continue",
       "submit": "Submit"
     },
-    "title": "GC Forms",
+    "title": "Unified Accounts Login",
     "required": "required",
     "errorSummary": {
       "title": "Please correct the errors on the page.",
@@ -30,8 +30,8 @@
   "footer": {
     "version": "Version",
     "about": {
-      "link": "https://articles.alpha.canada.ca/forms-formulaires/?utm_source=EN_FormsFooter&utm_medium=Product&utm_campaign=forms_product",
-      "desc": "About GC Forms"
+      "link": "https://digital.canada.ca",
+      "desc": "About Unified Accounts"
     },
     "terms-and-conditions": {
       "link": "/en/terms-and-conditions",
@@ -218,7 +218,7 @@
     },
     "reset": {
       "title": "Reset your password",
-      "description": "Reset your password to continue using GC Forms.",
+      "description": "Reset your password to continue.",
       "submit": "Continue",
       "labels": {
         "confirmationCode": "Confirmation code"
@@ -319,7 +319,7 @@
     },
     "title": "Create your account",
     "emailInputHint": "Use a government address only you can access, not a shared inbox.",
-    "description": "We’re asking for your information again because we’re transferring all GC Forms accounts to a new authentication provider.",
+    "description": "Create an account to access Platform services.",
     "noMethodAvailableWarning": "No authentication method available. Please contact your administrator.",
     "selectMethod": "Select the method you would like to authenticate",
     "agreeTo": "To register, you must agree to the terms of use",
@@ -356,7 +356,7 @@
     },
     "password": {
       "title": "Password creation",
-      "description": "We're asking for your information again because we're transferring all GC Forms accounts to a new authentication provider.",
+      "description": "Create a password to secure your account.",
       "errors": {
         "couldNotRegisterUser": "Could not register user account"
       }

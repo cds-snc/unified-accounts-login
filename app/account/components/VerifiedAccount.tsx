@@ -13,7 +13,7 @@ import { logMessage } from "@lib/logger";
 import { logoutCurrentSession } from "@lib/server/session";
 import { Button } from "@components/ui/button/Button";
 
-const FORMS_PRODUCTION_URL = process.env.NEXT_PUBLIC_FORMS_PRODUCTION_URL || "";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "";
 
 export const VerifiedAccount = ({ email }: { email: string }) => {
   const router = useRouter();
@@ -55,7 +55,7 @@ export const VerifiedAccount = ({ email }: { email: string }) => {
               components={[
                 <strong key="0" />,
                 <Button key="1" theme="link" onClick={logoutAndRedirectToRegister} />,
-                <Link key="2" href={`${FORMS_PRODUCTION_URL}/${language}/support`} />,
+                <Link key="2" href={`${APP_URL}/${language}/support`} />,
               ]}
             />
           </p>
