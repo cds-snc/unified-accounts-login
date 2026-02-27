@@ -1,7 +1,7 @@
-import { GCNotifyConnector } from "@gcforms/connectors";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { getPasswordResetTemplate } from "@lib/emailTemplates";
+import { sendNotifyEmail } from "@lib/notify";
 import { listUsers, passwordResetWithReturn } from "@lib/zitadel";
 
 import { setupServerActionContext } from "../../../../test/helpers/serverAction";
@@ -12,10 +12,8 @@ vi.mock("next/headers", () => ({
   headers: vi.fn(),
 }));
 
-vi.mock("@gcforms/connectors", () => ({
-  GCNotifyConnector: {
-    default: vi.fn(),
-  },
+vi.mock("@lib/notify", () => ({
+  sendNotifyEmail: vi.fn(),
 }));
 
 vi.mock("@lib/emailTemplates", () => ({
@@ -44,7 +42,6 @@ vi.mock("@lib/logger", () => ({
 }));
 
 describe("submitUserNameForm", () => {
-  const sendEmail = vi.fn();
   const originalNotifyApiKey = process.env.NOTIFY_API_KEY;
   const originalTemplateId = process.env.TEMPLATE_ID;
 
@@ -74,8 +71,7 @@ describe("submitUserNameForm", () => {
     } as never);
     vi.mocked(getPasswordResetTemplate).mockReturnValue({ code: "reset-456" } as never);
 
-    sendEmail.mockResolvedValue(undefined);
-    vi.mocked(GCNotifyConnector.default).mockReturnValue({ sendEmail } as never);
+    vi.mocked(sendNotifyEmail).mockResolvedValue(undefined);
 
     process.env.NOTIFY_API_KEY = "notify-key";
     process.env.TEMPLATE_ID = "template-123";
@@ -132,11 +128,11 @@ describe("submitUserNameForm", () => {
     const response = await submitUserNameForm({ loginName: "person@canada.ca" });
 
     expect(response).toEqual({ userId: "", loginName: "person@canada.ca" });
-    expect(sendEmail).not.toHaveBeenCalled();
+    expect(sendNotifyEmail).not.toHaveBeenCalled();
   });
 
   it("returns non-enumerating response when email send fails", async () => {
-    sendEmail.mockRejectedValue(new Error("notify unavailable"));
+    vi.mocked(sendNotifyEmail).mockRejectedValue(new Error("notify unavailable"));
 
     const response = await submitUserNameForm({ loginName: "person@canada.ca" });
 
@@ -157,7 +153,7 @@ describe("submitUserNameForm", () => {
       organizationId: "org-1",
     });
     expect(getPasswordResetTemplate).toHaveBeenCalledWith("reset-456");
-    expect(sendEmail).toHaveBeenCalledWith("person@canada.ca", "template-123", {
+    expect(sendNotifyEmail).toHaveBeenCalledWith("notify-key", "person@canada.ca", "template-123", {
       code: "reset-456",
     });
   });
