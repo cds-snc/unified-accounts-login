@@ -474,7 +474,7 @@ export async function listSessions({ serviceUrl, ids }: ListSessionsCommand) {
   );
 }
 
-export type AddHumanUserData = {
+type AddHumanUserData = {
   serviceUrl: string;
   firstName: string;
   lastName: string;
@@ -710,7 +710,7 @@ export async function createInviteCode({
   );
 }
 
-export type ListUsersCommand = {
+type ListUsersCommand = {
   serviceUrl: string;
   loginName?: string;
   userName?: string;
