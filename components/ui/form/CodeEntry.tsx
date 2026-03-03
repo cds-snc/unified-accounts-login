@@ -1,15 +1,13 @@
 /*--------------------------------------------*
  * Internal Aliases
  *--------------------------------------------*/
-import { I18n } from "@i18n";
+import { GcdsInput } from "@gcds-core/components-react";
+
+import { useTranslation } from "@i18n/client";
 
 /*--------------------------------------------*
  * Local Relative
  *--------------------------------------------*/
-import { ErrorMessage } from "./ErrorMessage";
-import { Hint } from "./Hint";
-import { Label } from "./Label";
-import { TextInput } from "./TextInput";
 type FormState = {
   error?: string;
   validationErrors?: { fieldKey: string; fieldValue: string }[];
@@ -25,34 +23,30 @@ const getError = (fieldKey: string, state: FormState) => {
 export const CodeEntry = ({
   state,
   code,
+  onCodeChange,
   className,
 }: {
   state: FormState;
   code?: string;
+  onCodeChange?: (value: string) => void;
   className?: string;
 }) => {
+  const { t } = useTranslation("verify");
+
   return (
     <div className={className}>
-      <div className="gcds-input-wrapper">
-        <Label htmlFor="code" required>
-          <I18n i18nKey="label" namespace="verify" />
-        </Label>
-        <Hint id="codeHint">
-          <I18n i18nKey="hint" namespace="verify" />
-        </Hint>
-        {getError("code", state) && (
-          <ErrorMessage id={"errorMessageCode"}>{getError("code", state)}</ErrorMessage>
-        )}
-        <TextInput
-          type="text"
-          id="code"
-          defaultValue={state.formData?.code ?? code ?? ""}
-          autoComplete="one-time-code"
-          ariaDescribedbyIds={["codeHint", "errorMessageCode"]}
-          className="!w-36"
-          required
-        />
-      </div>
+      <GcdsInput
+        inputId="code"
+        label={t("label")}
+        hint={t("hint")}
+        type="text"
+        name="code"
+        value={code ?? ""}
+        autocomplete="one-time-code"
+        errorMessage={getError("code", state)}
+        onInput={(e) => onCodeChange?.((e.target as HTMLInputElement).value)}
+        required
+      />
     </div>
   );
 };

@@ -55,9 +55,9 @@ export function VerifyEmailForm({
   } = useTranslation("verify");
 
   const [error, setError] = useState<string>("");
-
   const [codeLoading, setCodeLoading] = useState<boolean>(false);
   const [codeSent, setCodeSent] = useState<boolean>(false);
+  const [codeValue, setCodeValue] = useState<string>(code ?? "");
 
   async function resendCode() {
     setError("");
@@ -110,8 +110,9 @@ export function VerifyEmailForm({
     }
   }, [code, userId, loginName, organization, requestId, router]);
 
-  const localFormAction = async (previousState: FormState, formData: FormData) => {
-    const code = (formData.get("code") as string) || "";
+  const localFormAction = async (previousState: FormState, _formData: FormData) => {
+    // Use controlled state value instead of FormData
+    const code = codeValue;
 
     // Validate form entries and map any errors to form state with translated messages
     const validationResult = await validateCode({ code });
@@ -190,7 +191,7 @@ export function VerifyEmailForm({
 
       <div className="w-full">
         <form action={formAction} noValidate>
-          <CodeEntry state={state} code={code ?? ""} className="mt-10" />
+          <CodeEntry state={state} code={codeValue} onCodeChange={setCodeValue} className="mt-10" />
 
           <div className="mb-6 mt-8 flex items-center gap-4">
             <Button

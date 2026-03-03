@@ -57,6 +57,7 @@ export function LoginOTP({
   const [, setError] = useState<string>("");
   const [codeSent, setCodeSent] = useState<boolean>(false);
   const [codeLoading, setCodeLoading] = useState<boolean>(false);
+  const [codeValue, setCodeValue] = useState<string>(code ?? "");
   const router = useRouter();
   const initialized = useRef(false);
 
@@ -85,8 +86,9 @@ export function LoginOTP({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const localFormAction = async (_: FormState, formData?: FormData) => {
-    const code = (formData?.get("code") as string) ?? "";
+  const localFormAction = async (_: FormState, _formData?: FormData) => {
+    // Use controlled state value instead of FormData
+    const code = codeValue;
     const result = await handleOTPFormSubmit(code, {
       loginName,
       sessionId,
@@ -146,7 +148,7 @@ export function LoginOTP({
 
       <div className="w-full">
         <form action={formAction} noValidate>
-          <CodeEntry state={state} code={code ?? ""} className="mt-8" />
+          <CodeEntry state={state} code={codeValue} onCodeChange={setCodeValue} className="mt-8" />
           <div className="mt-6 flex items-center gap-4">
             <BackButton />
             <SubmitButtonAction>

@@ -1,6 +1,8 @@
 /*--------------------------------------------*
  * Internal Aliases
  *--------------------------------------------*/
+import { GcdsHeading } from "@gcds-core/components-react";
+
 import { I18n } from "@i18n";
 export const AuthPanelTitle = ({
   i18nKey,
@@ -14,10 +16,10 @@ export const AuthPanelTitle = ({
   className?: string;
 }) => {
   return (
-    <div className={`mb-6 mt-4 ${className || ""}`}>
-      <h1 className="!mb-0">
+    <div className={`mt-4 ${className || ""}`.trim()}>
+      <GcdsHeading tag="h1" marginBottom="400">
         <I18n i18nKey={i18nKey} namespace={namespace} data={data} />
-      </h1>
+      </GcdsHeading>
     </div>
   );
 };

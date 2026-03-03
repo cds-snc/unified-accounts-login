@@ -3,16 +3,14 @@
  * Framework and Third-Party
  *--------------------------------------------*/
 import { useActionState, useState } from "react";
+import { GcdsButton, GcdsHeading, GcdsInput } from "@gcds-core/components-react";
 import { useTranslation } from "react-i18next";
 
 /*--------------------------------------------*
  * Internal Aliases
  *--------------------------------------------*/
 import { validatePersonalDetails } from "@lib/validationSchemas";
-import { Button } from "@components/ui/button/Button";
 import { SubmitButtonAction } from "@components/ui/button/SubmitButton";
-import { Label, TextInput } from "@components/ui/form";
-import { ErrorMessage } from "@components/ui/form/ErrorMessage";
 import { toast, ToastContainer } from "@components/ui/toast/Toast";
 
 /*--------------------------------------------*
@@ -95,11 +93,13 @@ export const PersonalDetails = ({
     <>
       <div className="rounded-2xl border-1 border-[#D1D5DB] bg-white p-6">
         <div className="flex items-center justify-between">
-          <h3 className="mb-6">{t("personalDetails.title")}</h3>
+          <GcdsHeading tag="h3" marginBottom="400">
+            {t("personalDetails.title")}
+          </GcdsHeading>
           <div>
-            <Button theme="primary" onClick={() => setEditMode(!editMode)}>
+            <GcdsButton buttonRole="primary" onClick={() => setEditMode(!editMode)}>
               {editMode ? t("personalDetails.cancel") : t("personalDetails.change")}
-            </Button>
+            </GcdsButton>
           </div>
         </div>
         {!editMode && (
@@ -123,40 +123,27 @@ export const PersonalDetails = ({
         {editMode && (
           <form action={formAction} noValidate>
             <div className="mb-4 flex flex-col gap-4">
-              <div className="gcds-input-wrapper">
-                <Label className="required" htmlFor="firstname" required>
-                  {t("personalDetails.firstName")}
-                </Label>
-                {getError("firstname") && (
-                  <ErrorMessage id={"errorMessageFirstname"}>{getError("firstname")}</ErrorMessage>
-                )}
-                <TextInput
-                  className="w-full"
-                  type="text"
-                  id="firstname"
-                  autoComplete="given-name"
-                  required
-                  defaultValue={state.formData?.firstname ?? ""}
-                  ariaDescribedbyIds={getError("firstname") ? ["errorMessageFirstname"] : undefined}
-                />
-              </div>
-              <div className="gcds-input-wrapper">
-                <Label htmlFor="lastname" required>
-                  {t("personalDetails.lastName")}
-                </Label>
-                {getError("lastname") && (
-                  <ErrorMessage id={"errorMessageLastname"}>{getError("lastname")}</ErrorMessage>
-                )}
-                <TextInput
-                  className="w-full"
-                  type="text"
-                  autoComplete="family-name"
-                  required
-                  id="lastname"
-                  defaultValue={state.formData?.lastname ?? ""}
-                  ariaDescribedbyIds={getError("lastname") ? ["errorMessageLastname"] : undefined}
-                />
-              </div>
+              <GcdsInput
+                inputId="firstname"
+                label={t("personalDetails.firstName")}
+                type="text"
+                name="firstname"
+                autocomplete="given-name"
+                required
+                defaultValue={state.formData?.firstname ?? ""}
+                errorMessage={getError("firstname")}
+              />
+
+              <GcdsInput
+                inputId="lastname"
+                label={t("personalDetails.lastName")}
+                type="text"
+                name="lastname"
+                autocomplete="family-name"
+                required
+                defaultValue={state.formData?.lastname ?? ""}
+                errorMessage={getError("lastname")}
+              />
             </div>
 
             <div>
