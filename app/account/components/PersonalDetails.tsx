@@ -3,9 +3,10 @@
 /*--------------------------------------------*
  * Framework and Third-Party
  *--------------------------------------------*/
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { cn } from "@lib/utils";
 /*--------------------------------------------*
  * Internal Aliases
  *--------------------------------------------*/
@@ -35,13 +36,22 @@ export const PersonalDetails = ({
   userId,
   firstName,
   lastName,
+  className,
 }: {
   userId: string;
   firstName: string;
   lastName: string;
+  className?: string;
 }) => {
   const { t } = useTranslation("account");
   const [editMode, setEditMode] = useState(false);
+  const firstNameRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (editMode) {
+      firstNameRef.current?.focus();
+    }
+  }, [editMode]);
 
   const localFormAction = async (previousState: FormState, formData: FormData) => {
     const formEntries = {
@@ -94,12 +104,22 @@ export const PersonalDetails = ({
 
   return (
     <>
-      <div className="rounded-2xl border-1 border-[#D1D5DB] bg-white p-6">
+      <div className={cn("rounded-2xl border-1 border-[#D1D5DB] bg-white p-6", className)}>
         <div className="flex items-center justify-between">
-          <h3 className="mb-6">{t("personalDetails.title")}</h3>
+          {/* Added for logical heading structure but style like an H3 for now to meet design*/}
+          <h2 id="personal-details-title" className="mb-6 text-xl font-semibold tablet:text-2xl">
+            {t("personalDetails.title")}
+          </h2>
           <div>
-            <Button theme="primary" onClick={() => setEditMode(!editMode)}>
-              {editMode ? t("personalDetails.cancel") : t("personalDetails.change")}
+            <Button
+              theme="primary"
+              onClick={() => setEditMode(!editMode)}
+              aria-describedby="personal-details-title"
+              aria-expanded={editMode}
+              aria-controls="personal-details-form"
+              disabled={editMode}
+            >
+              {t("personalDetails.change")}
             </Button>
           </div>
         </div>
@@ -122,7 +142,7 @@ export const PersonalDetails = ({
           </div>
         )}
         {editMode && (
-          <form action={formAction} noValidate>
+          <form id="personal-details-form" action={formAction} noValidate>
             <div className="mb-4 flex flex-col gap-4">
               <div className="gcds-input-wrapper">
                 <Label className="required" htmlFor="firstname" required>
@@ -136,6 +156,7 @@ export const PersonalDetails = ({
                   type="text"
                   id="firstname"
                   autoComplete="given-name"
+                  ref={firstNameRef}
                   required
                   defaultValue={state.formData?.firstname ?? ""}
                   ariaDescribedbyIds={getError("firstname") ? ["errorMessageFirstname"] : undefined}
@@ -160,8 +181,11 @@ export const PersonalDetails = ({
               </div>
             </div>
 
-            <div>
+            <div className="flex gap-4">
               <SubmitButtonAction>{t("personalDetails.updateAccount")}</SubmitButtonAction>
+              <Button theme="secondary" onClick={() => setEditMode(!editMode)}>
+                {t("personalDetails.cancel")}
+              </Button>
             </div>
           </form>
         )}

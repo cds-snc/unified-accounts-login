@@ -24,6 +24,7 @@ import { MFAAuthentication } from "./components/MFAAuthentication";
 import { PasswordAuthentication } from "./components/PasswordAuthentication";
 import { PersonalDetails } from "./components/PersonalDetails";
 import { VerifiedAccount } from "./components/VerifiedAccount";
+
 export async function generateMetadata(): Promise<Metadata> {
   const { t } = await serverTranslation("account");
   return { title: t("title") };
@@ -99,18 +100,15 @@ export default async function Page(props: { searchParams: Promise<SearchParams> 
   ]);
 
   return (
-    <div id="content">
-      <PersonalDetails userId={userId} firstName={firstName} lastName={lastName} />
-      <div className="mb-4"></div>
-      <VerifiedAccount email={email} />
-      <div className="mb-4"></div>
-      <PasswordAuthentication />
-      <div className="mb-4"></div>
+    <>
+      <PersonalDetails userId={userId} firstName={firstName} lastName={lastName} className="mb-4" />
+      <VerifiedAccount email={email} className="mb-4" />
+      <PasswordAuthentication className="mb-4" />
       <MFAAuthentication
         u2fList={u2fList}
         authenticatorStatus={authenticatorStatus}
         userId={userId}
       />
-    </div>
+    </>
   );
 }
