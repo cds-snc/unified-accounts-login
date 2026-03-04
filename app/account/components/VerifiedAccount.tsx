@@ -4,6 +4,7 @@
  *--------------------------------------------*/
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { GcdsHeading, GcdsText } from "@gcds-core/components-react";
 import { Trans, useTranslation } from "react-i18next";
 
 /*--------------------------------------------*
@@ -42,13 +43,15 @@ export const VerifiedAccount = ({ email }: { email: string }) => {
       <div className="rounded-2xl border-1 border-[#D1D5DB] bg-white p-6">
         <div className="grid grid-cols-[1fr_auto] items-start gap-4">
           <div>
-            <h3 className="mb-6">{t("verifiedAccount.title")}</h3>
+            <GcdsHeading tag="h3" marginBottom="600">
+              {t("verifiedAccount.title")}
+            </GcdsHeading>
             <div className="mb-1 font-semibold">{t("verifiedAccount.email")}</div>
             <div>
               <em>{email}</em>
             </div>
           </div>
-          <p className="max-w-48 self-start text-right">
+          <GcdsText>
             <Trans
               i18nKey="verifiedAccount.changeMessage"
               ns="account"
@@ -58,7 +61,7 @@ export const VerifiedAccount = ({ email }: { email: string }) => {
                 <Link key="2" href={`${APP_URL}/${language}/support`} />,
               ]}
             />
-          </p>
+          </GcdsText>
         </div>
       </div>
     </>

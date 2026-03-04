@@ -4,6 +4,7 @@
 import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { GcdsButton } from "@gcds-core/components-react";
 import { type RegisterTOTPResponse } from "@zitadel/proto/zitadel/user/v2/user_service_pb";
 
 /*--------------------------------------------*
@@ -26,7 +27,6 @@ import { AuthPanel } from "@components/auth/AuthPanel";
 import { TotpRegister } from "@components/mfa/otp/TotpRegister";
 import * as Alert from "@components/ui/alert/Alert";
 import { BackButton } from "@components/ui/button/BackButton";
-import { Button } from "@components/ui/button/Button";
 
 export default async function Page(props: {
   searchParams: Promise<Record<string | number | symbol, string | undefined>>;
@@ -177,14 +177,14 @@ export default async function Page(props: {
             <span className="grow"></span>
 
             {shouldBlockContinue ? (
-              <Button disabled>
+              <GcdsButton disabled>
                 <I18n i18nKey="set.submit" namespace="otp" />
-              </Button>
+              </GcdsButton>
             ) : (
               <Link href={urlToContinue}>
-                <Button>
+                <GcdsButton>
                   <I18n i18nKey="set.submit" namespace="otp" />
-                </Button>
+                </GcdsButton>
               </Link>
             )}
           </div>

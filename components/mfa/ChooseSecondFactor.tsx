@@ -5,6 +5,7 @@
  *--------------------------------------------*/
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { GcdsButton } from "@gcds-core/components-react";
 import { AuthenticationMethodType } from "@zitadel/proto/zitadel/user/v2/user_service_pb";
 
 /*--------------------------------------------*
@@ -13,7 +14,6 @@ import { AuthenticationMethodType } from "@zitadel/proto/zitadel/user/v2/user_se
 import { buildUrlWithRequestId } from "@lib/utils";
 import { cn } from "@lib/utils";
 import { useTranslation } from "@i18n/client";
-import { Button } from "@components/ui/button/Button";
 
 /*--------------------------------------------*
  * Local Relative
@@ -105,9 +105,9 @@ export function ChooseSecondFactor({ userMethods, requestId }: Props) {
       </div>
 
       <div className="mt-8 flex justify-start">
-        <Button theme="primary" disabled={!selectedMethod} onClick={handleContinue}>
+        <GcdsButton buttonRole="primary" disabled={!selectedMethod} onClick={handleContinue}>
           {t("set.continue") || "Continue"}
-        </Button>
+        </GcdsButton>
       </div>
     </>
   );

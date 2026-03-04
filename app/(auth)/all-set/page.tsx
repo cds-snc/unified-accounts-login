@@ -3,6 +3,7 @@
  *--------------------------------------------*/
 import { headers } from "next/headers";
 import Image from "next/image";
+import { GcdsHeading, GcdsText } from "@gcds-core/components-react";
 
 /*--------------------------------------------*
  * Internal Aliases
@@ -106,16 +107,16 @@ export default async function Page(props: { searchParams: Promise<SearchParams> 
           <div className="flex flex-col justify-center">
             {/* Title with checkmark icon */}
             <div className="mb-8 flex items-center gap-3">
-              <h1 className="!mb-0 text-4xl font-bold">
+              <GcdsHeading tag="h1" marginBottom="0">
                 <I18n i18nKey="title" namespace="allSet" />
-              </h1>
+              </GcdsHeading>
               <CircleCheckIcon className="size-10 text-gcds-green-700" />
             </div>
 
             {/* Description */}
-            <p className="mb-8">
+            <GcdsText marginBottom="800">
               <I18n i18nKey="description" namespace="allSet" />
-            </p>
+            </GcdsText>
 
             {/* User email display */}
             {loginName && (

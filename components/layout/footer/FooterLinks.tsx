@@ -3,6 +3,8 @@
 /*--------------------------------------------*
  * Internal Aliases
  *--------------------------------------------*/
+import { GcdsLink } from "@gcds-core/components-react";
+
 import { I18n } from "@i18n";
 import { useTranslation } from "@i18n/client";
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "";
@@ -17,17 +19,17 @@ export const FooterLinks = () => {
 
   return (
     <span className="mr-10 inline-block">
-      <a className="whitespace-nowrap" href={`${APP_URL}/${locale}/about`} target="_blank">
+      <GcdsLink href={`${APP_URL}/${locale}/about`} external>
         <I18n i18nKey="about.desc" namespace="footer" />
-      </a>
+      </GcdsLink>
       <BulletPoint />
-      <a className="whitespace-nowrap" href={`${APP_URL}/${locale}/terms-of-use`}>
+      <GcdsLink href={`${APP_URL}/${locale}/terms-of-use`}>
         <I18n i18nKey="terms-of-use.desc" namespace="footer" />
-      </a>
+      </GcdsLink>
       <BulletPoint />
-      <a className="whitespace-nowrap" href={`${APP_URL}/${locale}/sla`}>
+      <GcdsLink href={`${APP_URL}/${locale}/sla`}>
         <I18n i18nKey="sla.desc" namespace="footer" />
-      </a>
+      </GcdsLink>
     </span>
   );
 };

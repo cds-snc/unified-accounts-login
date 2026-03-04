@@ -3,9 +3,8 @@
  * Framework and Third-Party
  *--------------------------------------------*/
 import { useActionState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { GcdsInput, GcdsLink } from "@gcds-core/components-react";
+import { GcdsInput, GcdsLink, GcdsText } from "@gcds-core/components-react";
 
 /*--------------------------------------------*
  * Internal Aliases
@@ -126,12 +125,12 @@ export function RegisterForm({ organization, requestId }: Props) {
           />
         </div>
 
-        <p className="-mt-2 mb-10">
+        <GcdsText marginBottom="1000">
           {t("terms.agreement")}
           <GcdsLink href={`${APP_URL}/${i18n.language}/terms-of-use`}>
             {t("terms.linkText")}
           </GcdsLink>
-        </p>
+        </GcdsText>
 
         <div>
           <SubmitButtonAction>{t("button.continue", { ns: "common" })}</SubmitButtonAction>

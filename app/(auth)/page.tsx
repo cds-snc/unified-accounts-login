@@ -5,6 +5,7 @@ import { Metadata } from "next";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { GcdsText } from "@gcds-core/components-react";
 
 /*--------------------------------------------*
  * Internal Aliases
@@ -60,14 +61,14 @@ export default async function LoginPage(props: { searchParams: Promise<SearchPar
     <AuthPanel titleI18nKey="title" descriptionI18nKey="form.description" namespace="start">
       <LoginForm requestId={requestId} organization={organization} />
 
-      <p className="mt-10">
+      <GcdsText marginTop="1000">
         <I18n i18nKey="register" namespace="start" />
         &nbsp;
         <Link href={registerLink}>
           <I18n i18nKey="registerLinkText" namespace="start" />
         </Link>
         .
-      </p>
+      </GcdsText>
     </AuthPanel>
   );
 }

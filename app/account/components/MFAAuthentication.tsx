@@ -3,7 +3,7 @@
  * Framework and Third-Party
  *--------------------------------------------*/
 import Image from "next/image";
-import Link from "next/link";
+import { GcdsHeading, GcdsLink, GcdsText } from "@gcds-core/components-react";
 import { useTranslation } from "react-i18next";
 
 /*--------------------------------------------*
@@ -57,9 +57,11 @@ export const MFAAuthentication = ({
   return (
     <>
       <div className="rounded-2xl border-1 border-[#D1D5DB] bg-white p-6">
-        <h3 className="mb-6">{t("mfaAuthentication.title")}</h3>
+        <GcdsHeading tag="h3" marginBottom="600">
+          {t("mfaAuthentication.title")}
+        </GcdsHeading>
 
-        {!hasMFAMethods && <p>{t("mfaAuthentication.noTwoFactor")}</p>}
+        {!hasMFAMethods && <GcdsText>{t("mfaAuthentication.noTwoFactor")}</GcdsText>}
 
         {hasMFAMethods && (
           <>
@@ -118,7 +120,7 @@ export const MFAAuthentication = ({
                 height={24}
                 className="mr-1"
               />{" "}
-              <Link href="/mfa/set">{t("mfaAuthentication.addlMethods")}</Link>
+              <GcdsLink href="/mfa/set">{t("mfaAuthentication.addlMethods")}</GcdsLink>
             </div>
           </>
         )}

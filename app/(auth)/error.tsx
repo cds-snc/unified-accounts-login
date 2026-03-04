@@ -5,6 +5,7 @@
  *--------------------------------------------*/
 import { useEffect } from "react";
 import Image from "next/image";
+import { GcdsHeading } from "@gcds-core/components-react";
 
 /*--------------------------------------------*
  * Internal Aliases
@@ -19,9 +20,9 @@ export default function Error({ error }: { error: Error & { digest?: string } })
   return (
     <div className="">
       <div className="text-center">
-        <h1 className="!mb-6 mt-8">
+        <GcdsHeading tag="h1" marginBottom="600" marginTop="800">
           <I18n i18nKey="title" namespace="error" />
-        </h1>
+        </GcdsHeading>
         <Image
           src={getImageUrl("/img/goose.png")}
           alt="Goose"
