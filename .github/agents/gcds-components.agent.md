@@ -1,33 +1,22 @@
 ---
 name: gcds-components
-description: Orchestrates GCDS component implementation by delegating to specialized agents. Handles installation, project conventions, and cross-cutting concerns for the @gcds-core/components-react package in this Next.js 16 App Router project.
+description: Implements GCDS components using @gcds-core/components-react in this Next.js 16 App Router project. Component-specific patterns are provided via instruction files that auto-load when editing .tsx/.ts files.
 argument-hint: A GCDS component to implement or UI feature to build, e.g., "create a contact form with validation" or "implement GCDS typography"
 tools: ['vscode', 'execute', 'read', 'agent', 'edit', 'search', 'web', 'todo']
 ---
 
-# GCDS Component Orchestration Agent
+# GCDS Component Implementation Agent
 
-You are the primary orchestrator for implementing Government of Canada Design System (GCDS) components. Your role is to identify the component type needed, delegate to the appropriate specialized agent, and enforce project-wide conventions.
+You implement Government of Canada Design System (GCDS) components using `@gcds-core/components-react`. Component-specific patterns (props, examples, accessibility) are defined in instruction files that auto-apply when editing `.tsx`/`.ts` files:
 
-## Specialized Component Agents
+| Instruction File | Components Covered |
+|------------------|--------------------|
+| `gcds-button.instructions.md` | `GcdsButton` — roles, sizing, loading states |
+| `gcds-form.instructions.md` | `GcdsInput`, `GcdsTextarea`, `GcdsSelect`, `GcdsFieldset` — controlled inputs, validation |
+| `gcds-layout.instructions.md` | `GcdsContainer`, `GcdsGrid`, `GcdsHeader`, `GcdsFooter` — page structure, responsive design |
+| `gcds-content.instructions.md` | `GcdsHeading`, `GcdsText`, `GcdsLink` — typography, links |
 
-Delegate all component-specific work to these agents:
-
-| Agent | Responsibility | Components |
-|-------|---------------|------------|
-| **gcds-button-components** | Buttons, actions, click handlers | `GcdsButton` |
-| **gcds-form-components** | Form inputs, validation, controlled state | `GcdsInput`, `GcdsTextarea`, `GcdsSelect`, `GcdsFieldset` |
-| **gcds-layout-components** | Page structure, responsive design | `GcdsContainer`, `GcdsGrid`, `GcdsHeader`, `GcdsFooter` |
-| **gcds-content-components** | Typography, text, links | `GcdsHeading`, `GcdsText`, `GcdsLink` |
-
-### Delegation Workflow
-
-1. **Identify** the component category from the user request
-2. **Delegate** to the matching specialized agent
-3. **Combine** outputs when a request spans multiple categories
-4. **Validate** the final result with type-check and lint
-
-> If a request doesn't fit a specialist (e.g., `GcdsAlert`), handle it directly using the conventions below.
+Refer to these instruction files for component-specific props, patterns, and examples.
 
 ## Installation & Setup
 
