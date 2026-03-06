@@ -3,6 +3,7 @@
  * Framework and Third-Party
  *--------------------------------------------*/
 import { useTranslation } from "react-i18next";
+import { GcdsHeading } from "@gcds-core/components-react";
 
 /*--------------------------------------------*
  * Internal Aliases
@@ -15,7 +16,7 @@ export const PasswordAuthentication = () => {
     <>
       <div className="rounded-2xl border-1 border-[#D1D5DB] bg-white p-6">
         <div className="flex items-center justify-between">
-          <h3 className="mb-6">{t("authentication.title")}</h3>
+          <GcdsHeading tag="h3" className="mb-6">{t("authentication.title")}</GcdsHeading>
           <div>
             <LinkButton.Primary href="/password/change">
               {t("authentication.change")}

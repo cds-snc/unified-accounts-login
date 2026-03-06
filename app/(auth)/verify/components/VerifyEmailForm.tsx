@@ -7,6 +7,7 @@ import { useActionState } from "react";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { GcdsButton } from "@gcds-core/components-react";
 
 /*--------------------------------------------*
  * Internal Aliases
@@ -193,15 +194,15 @@ export function VerifyEmailForm({
           <CodeEntry state={state} code={code ?? ""} className="mt-10" />
 
           <div className="mb-6 mt-8 flex items-center gap-4">
-            <Button
-              theme="link"
+            <GcdsButton
+              buttonRole="secondary"
               type="button"
               onClick={() => resendCode()}
               disabled={codeLoading}
               data-testid="resend-button"
             >
               <I18n i18nKey="newCode" namespace="verify" />
-            </Button>
+            </GcdsButton>
             <Link href={`${SUPPORT_URL}/${language}/support`}>
               <I18n i18nKey="help" namespace="verify" />
             </Link>

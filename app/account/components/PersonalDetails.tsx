@@ -4,6 +4,7 @@
  *--------------------------------------------*/
 import { useActionState, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { GcdsButton, GcdsHeading } from "@gcds-core/components-react";
 
 /*--------------------------------------------*
  * Internal Aliases
@@ -95,11 +96,11 @@ export const PersonalDetails = ({
     <>
       <div className="rounded-2xl border-1 border-[#D1D5DB] bg-white p-6">
         <div className="flex items-center justify-between">
-          <h3 className="mb-6">{t("personalDetails.title")}</h3>
+          <GcdsHeading tag="h3" className="mb-6">{t("personalDetails.title")}</GcdsHeading>
           <div>
-            <Button theme="primary" onClick={() => setEditMode(!editMode)}>
+            <GcdsButton buttonRole="primary" onClick={() => setEditMode(!editMode)}>
               {editMode ? t("personalDetails.cancel") : t("personalDetails.change")}
-            </Button>
+            </GcdsButton>
           </div>
         </div>
         {!editMode && (

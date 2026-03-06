@@ -1,4 +1,9 @@
 /*--------------------------------------------*
+ * Framework and Third-Party
+ *--------------------------------------------*/
+import { GcdsHeading } from "@gcds-core/components-react";
+
+/*--------------------------------------------*
  * Internal Aliases
  *--------------------------------------------*/
 import { I18n } from "@i18n";
@@ -15,9 +20,9 @@ export const AuthPanelTitle = ({
 }) => {
   return (
     <div className={`mb-6 mt-4 ${className || ""}`}>
-      <h1 className="!mb-0">
+      <GcdsHeading tag="h1" className="!mb-0">
         <I18n i18nKey={i18nKey} namespace={namespace} data={data} />
-      </h1>
+      </GcdsHeading>
     </div>
   );
 };

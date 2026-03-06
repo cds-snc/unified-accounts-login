@@ -1,6 +1,11 @@
 "use client";
 
 /*--------------------------------------------*
+ * Framework and Third-Party
+ *--------------------------------------------*/
+import { GcdsLink } from "@gcds-core/components-react";
+
+/*--------------------------------------------*
  * Internal Aliases
  *--------------------------------------------*/
 import { useTranslation } from "@i18n";
@@ -30,7 +35,9 @@ export const Fip = ({ language }: { language: string }) => {
 
   return (
     <div className="gcds-signature brand__signature">
-      <a href={link}>{normalizedLanguage === "fr" ? <SignatureFr /> : <SignatureEn />}</a>
+      <GcdsLink href={link} external>
+        {normalizedLanguage === "fr" ? <SignatureFr /> : <SignatureEn />}
+      </GcdsLink>
     </div>
   );
 };

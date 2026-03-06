@@ -2,6 +2,7 @@
  * Framework and Third-Party
  *--------------------------------------------*/
 import * as Tooltip from "@radix-ui/react-tooltip";
+import { GcdsFooter, GcdsHeader } from "@gcds-core/components-react";
 
 /*--------------------------------------------*
  * Internal Aliases
@@ -10,9 +11,6 @@ import { I18n } from "@i18n";
 import { serverTranslation } from "@i18n/server";
 import { Logout } from "@components/auth/Logout";
 import { SiteLogo } from "@components/icons/SiteLogo";
-import { Footer } from "@components/layout/footer/Footer";
-import { FooterLinks } from "@components/layout/footer/FooterLinks";
-import { GcdsHeader } from "@components/layout/gcds-header/GcdsHeader";
 import { ToastContainer } from "@components/ui/toast/Toast";
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "";
 
@@ -21,11 +19,16 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
     i18n: { language },
   } = await serverTranslation(["fip"]);
 
+  const langHref = language === "en" ? "/fr" : "/en";
+
   return (
     <div className="flex min-h-full flex-col bg-gray-soft">
-      <GcdsHeader language={language}>
-        <div className="inline-block">
-          <Logout className="mr-2 text-sm" />
+      <GcdsHeader 
+        signatureHasLink
+        langHref={langHref}
+      >
+        <div className="flex items-center" slot="menu">
+          <Logout className="text-sm" />
         </div>
       </GcdsHeader>
 
@@ -36,13 +39,13 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
           >
             <main id="content">
               <a
-                className="mb-6 mr-10 inline-flex no-underline focus:bg-white"
+                className="mb-6 mr-10 flex items-center no-underline focus:bg-white hover:no-underline"
                 href={`${APP_URL}/${language}/about`}
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                <span className="">
-                  <SiteLogo />
-                </span>
-                <span className="ml-3 inline-block text-[24px] font-semibold leading-10 text-[#1B00C2]">
+                <SiteLogo className="flex-shrink-0" />
+                <span className="ml-3 text-[24px] font-semibold text-[#1B00C2] leading-none">
                   <I18n i18nKey="title" namespace="common" />
                 </span>
               </a>
@@ -52,9 +55,7 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
           </div>
         </div>
       </div>
-      <Footer>
-        <FooterLinks />
-      </Footer>
+      <GcdsFooter display="compact" />
     </div>
   );
 }

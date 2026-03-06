@@ -5,6 +5,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
+import { GcdsButton, GcdsHeading, GcdsText } from "@gcds-core/components-react";
 
 /*--------------------------------------------*
  * Internal Aliases
@@ -57,9 +58,9 @@ export const MFAAuthentication = ({
   return (
     <>
       <div className="rounded-2xl border-1 border-[#D1D5DB] bg-white p-6">
-        <h3 className="mb-6">{t("mfaAuthentication.title")}</h3>
+        <GcdsHeading tag="h3" className="mb-6">{t("mfaAuthentication.title")}</GcdsHeading>
 
-        {!hasMFAMethods && <p>{t("mfaAuthentication.noTwoFactor")}</p>}
+        {!hasMFAMethods && <GcdsText>{t("mfaAuthentication.noTwoFactor")}</GcdsText>}
 
         {hasMFAMethods && (
           <>
@@ -83,9 +84,9 @@ export const MFAAuthentication = ({
                           </span>
                           <span>({data.name || t("mfaAuthentication.unknownDevice")})</span>
                           <span className="mx-2">&#8226;</span>
-                          <Button onClick={() => handleRemoveU2F(data.id)} theme="link">
+                          <GcdsButton onClick={() => handleRemoveU2F(data.id)} buttonRole="danger">
                             {t("mfaAuthentication.remove")}
-                          </Button>
+                          </GcdsButton>
                         </li>
                       );
                     })}
@@ -103,9 +104,9 @@ export const MFAAuthentication = ({
                       {t("mfaAuthentication.authenticatorApp")}
                     </span>
                     <span className="mx-2">&#8226;</span>
-                    <Button onClick={handleRemoveAuthenticator} theme="link">
+                    <GcdsButton onClick={handleRemoveAuthenticator} buttonRole="danger">
                       {t("mfaAuthentication.remove")}
-                    </Button>
+                    </GcdsButton>
                   </li>
                 )}
               </ul>

@@ -1,6 +1,11 @@
 "use client";
 
 /*--------------------------------------------*
+ * Framework and Third-Party
+ *--------------------------------------------*/
+import { GcdsLink } from "@gcds-core/components-react";
+
+/*--------------------------------------------*
  * Internal Aliases
  *--------------------------------------------*/
 import { I18n } from "@i18n";
@@ -17,17 +22,17 @@ export const FooterLinks = () => {
 
   return (
     <span className="mr-10 inline-block">
-      <a className="whitespace-nowrap" href={`${APP_URL}/${locale}/about`} target="_blank">
+      <GcdsLink href={`${APP_URL}/${locale}/about`} external className="whitespace-nowrap">
         <I18n i18nKey="about.desc" namespace="footer" />
-      </a>
+      </GcdsLink>
       <BulletPoint />
-      <a className="whitespace-nowrap" href={`${APP_URL}/${locale}/terms-of-use`}>
+      <GcdsLink href={`${APP_URL}/${locale}/terms-of-use`} className="whitespace-nowrap">
         <I18n i18nKey="terms-of-use.desc" namespace="footer" />
-      </a>
+      </GcdsLink>
       <BulletPoint />
-      <a className="whitespace-nowrap" href={`${APP_URL}/${locale}/sla`}>
+      <GcdsLink href={`${APP_URL}/${locale}/sla`} className="whitespace-nowrap">
         <I18n i18nKey="sla.desc" namespace="footer" />
-      </a>
+      </GcdsLink>
     </span>
   );
 };

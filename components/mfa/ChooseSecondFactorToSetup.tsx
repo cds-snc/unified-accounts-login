@@ -5,6 +5,7 @@
  *--------------------------------------------*/
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { GcdsButton } from "@gcds-core/components-react";
 
 /*--------------------------------------------*
  * Internal Aliases
@@ -98,9 +99,9 @@ export function ChooseSecondFactorToSetup({ checkAfter, requestId }: Props) {
       </div>
 
       <div className="mt-8 flex justify-start">
-        <Button theme="primary" disabled={!selectedMethod} onClick={handleContinue}>
+        <GcdsButton buttonRole="primary" disabled={!selectedMethod} onClick={handleContinue}>
           {t("set.continue") || "Continue"}
-        </Button>
+        </GcdsButton>
       </div>
     </>
   );
