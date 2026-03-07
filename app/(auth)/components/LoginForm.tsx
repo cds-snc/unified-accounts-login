@@ -7,10 +7,10 @@ import { useActionState, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import { getSafeErrorMessage } from "@lib/safeErrorMessage";
 /*--------------------------------------------*
  * Internal Aliases
  *--------------------------------------------*/
+import { getSafeErrorMessage } from "@lib/safeErrorMessage";
 import { buildUrlWithRequestId } from "@lib/utils";
 import { validateUsernameAndPassword } from "@lib/validationSchemas";
 import { useTranslation } from "@i18n";
@@ -68,19 +68,19 @@ export function LoginForm({ requestId }: Props) {
       };
     }
 
-    const response = await submitLoginForm({
-      username: username,
-      password: password,
-      requestId,
-    })
-      .catch(() => {
-        return {
-          error: t("validation.invalidCredentials"),
-        };
-      })
-      .finally(() => {
-        setLoading(false);
+    let response;
+    try {
+      response = await submitLoginForm({
+        username: username,
+        password: password,
+        requestId,
       });
+    } catch (e) {
+      response = {
+        error: t("validation.invalidCredentials"),
+      };
+    }
+    setLoading(false);
 
     if (response && "error" in response && response.error) {
       return {

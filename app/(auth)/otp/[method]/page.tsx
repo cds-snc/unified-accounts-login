@@ -9,15 +9,20 @@ import { headers } from "next/headers";
  *--------------------------------------------*/
 import { getSessionCredentials } from "@lib/cookies";
 import { getSafeRedirectUrl } from "@lib/redirect-validator";
+import { getOriginalHostFromHeaders } from "@lib/server/host";
 import { getServiceUrlFromHeaders } from "@lib/service-url";
 import { loadSessionById, loadSessionByLoginname } from "@lib/session";
+import { resolveSiteConfigByHost } from "@lib/site-config";
 import { getSerializableObject, SearchParams } from "@lib/utils";
 import { getLoginSettings } from "@lib/zitadel";
-import { I18n } from "@i18n";
 import { serverTranslation } from "@i18n/server";
-import { UserAvatar } from "@components/account/user-avatar";
 import { AuthPanel } from "@components/auth/AuthPanel";
-import { LoginOTP } from "@components/mfa/otp/LoginOTP";
+
+/*--------------------------------------------*
+ * Local Relative
+ *--------------------------------------------*/
+import { LoginOTP } from "./components/LoginOTP";
+
 export async function generateMetadata(): Promise<Metadata> {
   const { t } = await serverTranslation("otp");
   return { title: t("verify.title") };
@@ -27,15 +32,14 @@ export default async function Page(props: {
   searchParams: Promise<SearchParams>;
   params: Promise<Record<string | number | symbol, string | undefined>>;
 }) {
-  const params = await props.params;
-  const searchParams = await props.searchParams;
+  const [params, searchParams, _headers, { sessionId, loginName, organization, requestId }] =
+    await Promise.all([props.params, props.searchParams, headers(), getSessionCredentials()]);
 
-  const _headers = await headers();
   const { serviceUrl } = getServiceUrlFromHeaders(_headers);
+  const resolvedHost = getOriginalHostFromHeaders(_headers);
+  const siteConfig = resolveSiteConfigByHost(resolvedHost);
 
   const { code, redirect } = searchParams;
-
-  const { sessionId, loginName, organization, requestId } = await getSessionCredentials();
 
   // Method =  `/otp/email` or `/otp/time-based` (authenticator app)
   const { method } = params;
@@ -73,19 +77,9 @@ export default async function Page(props: {
           loginSettings={loginSettings}
           code={code}
           redirect={safeRedirect}
-        >
-          {method === "email" && (
-            <I18n i18nKey="verify.emailDescription" namespace="otp" tagName="p" className="mb-3" />
-          )}
-
-          {sessionFactors && (
-            <UserAvatar
-              loginName={loginName ?? sessionFactors.factors?.user?.loginName}
-              displayName={sessionFactors.factors?.user?.displayName}
-              showDropdown={false}
-            />
-          )}
-        </LoginOTP>
+          displayName={sessionFactors.factors?.user?.displayName}
+          siteConfig={siteConfig}
+        />
       )}
     </AuthPanel>
   );

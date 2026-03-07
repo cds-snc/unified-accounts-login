@@ -1,4 +1,5 @@
 "use client";
+
 /*--------------------------------------------*
  * Framework and Third-Party
  *--------------------------------------------*/
@@ -8,11 +9,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LoginSettings } from "@zitadel/proto/zitadel/settings/v2/login_settings_pb";
 
-import { getSafeErrorMessage } from "@lib/safeErrorMessage";
 /*--------------------------------------------*
  * Internal Aliases
  *--------------------------------------------*/
+import { getSafeErrorMessage } from "@lib/safeErrorMessage";
+import { getSiteLink, SiteConfig } from "@lib/site-config";
 import { I18n, useTranslation } from "@i18n";
+import { UserAvatar } from "@components/account/user-avatar";
 import { BackButton } from "@components/ui/button/BackButton";
 import { Button } from "@components/ui/button/Button";
 import { SubmitButtonAction } from "@components/ui/button/SubmitButton";
@@ -23,8 +26,7 @@ import { ErrorSummary } from "@components/ui/form/ErrorSummary";
 /*--------------------------------------------*
  * Local Relative
  *--------------------------------------------*/
-import { FormState, handleOTPFormSubmit, updateSessionForOTPChallenge } from "./action";
-const SUPPORT_URL = process.env.NEXT_PUBLIC_APP_URL || "";
+import { FormState, handleOTPFormSubmit, updateSessionForOTPChallenge } from "../actions";
 
 export function LoginOTP({
   loginName,
@@ -33,9 +35,10 @@ export function LoginOTP({
   organization,
   method,
   code,
+  siteConfig,
   loginSettings,
   redirect,
-  children,
+  displayName,
 }: {
   loginName?: string; // either loginName or sessionId must be provided
   sessionId?: string;
@@ -43,9 +46,10 @@ export function LoginOTP({
   organization?: string;
   method: string;
   code?: string;
+  siteConfig: SiteConfig;
   loginSettings?: LoginSettings;
   redirect?: string | null;
-  children?: React.ReactNode;
+  displayName?: string;
 }) {
   const {
     t,
@@ -54,7 +58,6 @@ export function LoginOTP({
   const genericErrorMessage = t("set.genericError");
   const invalidCodeMessage = t("set.invalidCode");
   const invalidCodeLengthMessage = t("set.invalidCodeLength");
-  const [, setError] = useState<string>("");
   const [codeSent, setCodeSent] = useState<boolean>(false);
   const [codeLoading, setCodeLoading] = useState<boolean>(false);
   const router = useRouter();
@@ -69,18 +72,13 @@ export function LoginOTP({
       method,
     });
 
-    if (error) {
-      setError(error);
-    }
+    return !error;
   };
 
   useEffect(() => {
-    if (!initialized.current && ["email"].includes(method) && !code) {
+    if (!initialized.current && method === "email" && !code) {
       initialized.current = true;
-      requestOTPChallenge().catch((error) => {
-        setError(error);
-        return;
-      });
+      requestOTPChallenge().catch(() => false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -95,10 +93,8 @@ export function LoginOTP({
       method,
       loginSettings,
       redirect,
-      t,
     });
 
-    // Handle redirect if present
     if ("redirect" in result && result.redirect) {
       router.push(result.redirect);
     }
@@ -109,13 +105,14 @@ export function LoginOTP({
   const resendCode = async () => {
     setCodeSent(false);
     setCodeLoading(true);
-    requestOTPChallenge()
-      .then(() => setCodeSent(true))
-      .catch((error) => {
-        setError(error);
-        return;
-      })
-      .finally(() => setCodeLoading(false));
+    try {
+      const success = await requestOTPChallenge();
+      setCodeSent(success);
+      setCodeLoading(false);
+    } catch {
+      setCodeSent(false);
+      setCodeLoading(false);
+    }
   };
 
   const [state, formAction, isPending] = useActionState(localFormAction, {
@@ -142,7 +139,11 @@ export function LoginOTP({
 
       <ErrorSummary id="errorSummary" validationErrors={state.validationErrors} />
 
-      {children}
+      {method === "email" && (
+        <I18n i18nKey="verify.emailDescription" namespace="otp" tagName="p" className="mb-3" />
+      )}
+
+      <UserAvatar loginName={loginName} displayName={displayName} showDropdown={false} />
 
       <div className="w-full">
         <form action={formAction} noValidate>
@@ -156,10 +157,10 @@ export function LoginOTP({
         </form>
 
         <div className="mt-8 flex items-center gap-4">
-          <Link href={`${SUPPORT_URL}/${language}/support`}>
+          <Link href={getSiteLink(siteConfig, "support", language)}>
             <I18n i18nKey="help" namespace="verify" />
           </Link>
-          {["email"].includes(method) && (
+          {method === "email" && (
             <div className="flex whitespace-nowrap" aria-live="polite">
               <Button
                 theme="link"

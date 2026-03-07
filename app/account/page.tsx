@@ -10,9 +10,12 @@ import { redirect } from "next/navigation";
  *--------------------------------------------*/
 import { getSessionCredentials } from "@lib/cookies";
 import { logMessage } from "@lib/logger";
+import { getOriginalHostFromHeaders } from "@lib/server/host";
 import { AuthLevel, checkAuthenticationLevel } from "@lib/server/route-protection";
 import { getServiceUrlFromHeaders } from "@lib/service-url";
 import { isSessionValid, loadMostRecentSession, loadSessionById } from "@lib/session";
+import { resolveSiteConfigByHost } from "@lib/site-config";
+import { buildUrlWithRequestId, SearchParams } from "@lib/utils";
 import { getTOTPStatus, getU2FList, getUserByID } from "@lib/zitadel";
 import { serverTranslation } from "@i18n/server";
 
@@ -23,21 +26,28 @@ import { MFAAuthentication } from "./components/MFAAuthentication";
 import { PasswordAuthentication } from "./components/PasswordAuthentication";
 import { PersonalDetails } from "./components/PersonalDetails";
 import { VerifiedAccount } from "./components/VerifiedAccount";
+
 export async function generateMetadata(): Promise<Metadata> {
   const { t } = await serverTranslation("account");
-  return { title: t("title") };
+  return { title: t("navigation.title") };
 }
 
-export default async function Page() {
+export default async function Page(props: { searchParams: Promise<SearchParams> }) {
+  const searchParams = await props.searchParams;
+  const requestId = searchParams.requestId;
+  const loginRedirect = buildUrlWithRequestId("/", requestId);
+
   const _headers = await headers();
   const { serviceUrl } = getServiceUrlFromHeaders(_headers);
+  const resolvedHost = getOriginalHostFromHeaders(_headers);
+  const siteConfig = resolveSiteConfigByHost(resolvedHost);
 
   // Attempt to get session credentials from cookies
   let sessionId, organization, loginName;
   try {
     ({ sessionId, organization, loginName } = await getSessionCredentials());
   } catch (error) {
-    redirect("/");
+    redirect(loginRedirect);
   }
 
   // Page-level authentication check - defense in depth
@@ -49,7 +59,7 @@ export default async function Page() {
   );
 
   if (!authCheck.satisfied) {
-    redirect(authCheck.redirect || "/");
+    redirect(buildUrlWithRequestId(authCheck.redirect || "/", requestId));
   }
 
   const session = await loadSessionById(serviceUrl, sessionId, organization);
@@ -63,7 +73,7 @@ export default async function Page() {
 
   if (!hasRequiredProfile || !userId) {
     logMessage.info("Missing required user information, redirecting to login");
-    redirect("/");
+    redirect(loginRedirect);
   }
 
   try {
@@ -73,13 +83,13 @@ export default async function Page() {
     });
 
     if (!authSession || !(await isSessionValid({ serviceUrl, session: authSession }))) {
-      redirect("/");
+      redirect(loginRedirect);
     }
   } catch (error) {
     logMessage.error(
       `Error validating session, redirecting to login. Errors: ${JSON.stringify(error)}`
     );
-    redirect("/");
+    redirect(loginRedirect);
   }
 
   const [u2fList, authenticatorStatus] = await Promise.all([
@@ -94,18 +104,15 @@ export default async function Page() {
   ]);
 
   return (
-    <div id="content">
-      <PersonalDetails userId={userId} firstName={firstName} lastName={lastName} />
-      <div className="mb-4"></div>
-      <VerifiedAccount email={email} />
-      <div className="mb-4"></div>
-      <PasswordAuthentication />
-      <div className="mb-4"></div>
+    <>
+      <PersonalDetails userId={userId} firstName={firstName} lastName={lastName} className="mb-4" />
+      <VerifiedAccount email={email} className="mb-4" siteConfig={siteConfig} />
+      <PasswordAuthentication className="mb-4" />
       <MFAAuthentication
         u2fList={u2fList}
         authenticatorStatus={authenticatorStatus}
         userId={userId}
       />
-    </div>
+    </>
   );
 }

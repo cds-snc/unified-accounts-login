@@ -1,4 +1,5 @@
 "use client";
+
 /*--------------------------------------------*
  * Framework and Third-Party
  *--------------------------------------------*/
@@ -10,6 +11,7 @@ import { useTranslation } from "react-i18next";
  * Internal Aliases
  *--------------------------------------------*/
 import { getImageUrl } from "@lib/imageUrl";
+import { cn } from "@lib/utils";
 import { Button } from "@components/ui/button/Button";
 import { ToastContainer } from "@components/ui/toast/Toast";
 import { toast } from "@components/ui/toast/Toast";
@@ -18,14 +20,17 @@ import { toast } from "@components/ui/toast/Toast";
  * Parent Relative
  *--------------------------------------------*/
 import { removeTOTPAction, removeU2FAction } from "../actions";
+
 export const MFAAuthentication = ({
   u2fList,
   userId,
   authenticatorStatus,
+  className,
 }: {
   u2fList: Array<{ id: string; name: string; state?: string }>;
   userId: string;
   authenticatorStatus: boolean;
+  className?: string;
 }) => {
   const { t } = useTranslation("account");
   const hasMFAMethods = (Array.isArray(u2fList) && u2fList.length > 0) || authenticatorStatus;
@@ -56,7 +61,7 @@ export const MFAAuthentication = ({
 
   return (
     <>
-      <div className="rounded-2xl border-1 border-[#D1D5DB] bg-white p-6">
+      <div className={cn("rounded-2xl border-1 border-[#D1D5DB] bg-white p-6", className)}>
         <h3 className="mb-6">{t("mfaAuthentication.title")}</h3>
 
         {!hasMFAMethods && <p>{t("mfaAuthentication.noTwoFactor")}</p>}
@@ -69,21 +74,28 @@ export const MFAAuthentication = ({
                   u2fList
                     .sort((a, b) => (a.name || "").localeCompare(b.name || ""))
                     .map((data) => {
+                      const id = `u2f-${data.id}`;
                       return (
-                        <li key={data.id} className="mb-4">
+                        <li key={data.id} className="mb-4 flex items-center gap-2">
                           <Image
                             src={getImageUrl("/img/fingerprint_24px.png")}
                             alt=""
                             width={32}
                             height={32}
-                            className="mr-2 inline-block"
+                            className="inline-block"
                           />
-                          <span className="mr-2 font-semibold">
-                            {t("mfaAuthentication.securityKey")}
-                          </span>
-                          <span>({data.name || t("mfaAuthentication.unknownDevice")})</span>
-                          <span className="mx-2">&#8226;</span>
-                          <Button onClick={() => handleRemoveU2F(data.id)} theme="link">
+                          <div id={id} className="flex items-center gap-1">
+                            <span className="font-semibold">
+                              {t("mfaAuthentication.securityKey")}
+                            </span>
+                            <span>({data.name || t("mfaAuthentication.unknownDevice")})</span>
+                          </div>
+                          <span className="">&#8226;</span>
+                          <Button
+                            onClick={() => handleRemoveU2F(data.id)}
+                            theme="link"
+                            aria-describedby={id}
+                          >
                             {t("mfaAuthentication.remove")}
                           </Button>
                         </li>
@@ -91,18 +103,16 @@ export const MFAAuthentication = ({
                     })}
 
                 {authenticatorStatus && (
-                  <li className="mb-4">
+                  <li className="mb-4 flex items-center gap-2">
                     <Image
                       src={getImageUrl("/img/verified_user_24px.png")}
                       alt=""
                       width={32}
                       height={32}
-                      className="mr-2 inline-block"
+                      className="inline-block"
                     />
-                    <span className="mr-2 font-semibold">
-                      {t("mfaAuthentication.authenticatorApp")}
-                    </span>
-                    <span className="mx-2">&#8226;</span>
+                    <span className="font-semibold">{t("mfaAuthentication.authenticatorApp")}</span>
+                    <span>&#8226;</span>
                     <Button onClick={handleRemoveAuthenticator} theme="link">
                       {t("mfaAuthentication.remove")}
                     </Button>
