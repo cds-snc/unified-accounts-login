@@ -1,0 +1,16 @@
+{
+  "gcforms": {
+    "defaults": {
+      "about": "{baseUrl}/{locale}/about",
+      "termsOfUse": "{baseUrl}/{locale}/terms-of-use",
+      "sla": "{baseUrl}/{locale}/sla",
+      "support": "{baseUrl}/{locale}/support",
+      "profile": "{baseUrl}/{locale}/profile/oidc"
+    },
+    "overrides": {
+      "forms_dev": {
+        "about": "https://articles.alpha.canada.ca/forms-formulaires/"
+      }
+    }
+  }
+}

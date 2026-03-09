@@ -13,10 +13,10 @@ import {
 import { ChecksSchema } from "@zitadel/proto/zitadel/session/v2/session_service_pb";
 import { RegisterU2FResponse } from "@zitadel/proto/zitadel/user/v2/user_service_pb";
 
-import { updateSession } from "@lib/server/session";
 /*--------------------------------------------*
  * Internal Aliases
  *--------------------------------------------*/
+import { updateSession } from "@lib/server/session";
 import { buildUrlWithRequestId } from "@lib/utils";
 import { coerceToArrayBuffer, coerceToBase64Url } from "@lib/utils/base64";
 import { I18n } from "@i18n";
@@ -28,7 +28,8 @@ import { Alert, ErrorStatus, Label, TextInput } from "@components/ui/form";
 /*--------------------------------------------*
  * Local Relative
  *--------------------------------------------*/
-import { addU2F, verifyU2F } from "./actions";
+import { addU2F, verifyU2F } from "../actions";
+
 type PublicKeyCredentialJSON = {
   id: string;
   rawId: string;
@@ -68,19 +69,20 @@ export function RegisterU2f({ sessionId, requestId, checkAfter }: Props) {
     setError("");
     setLoading(true);
 
-    const response = await verifyU2F({
-      u2fId,
-      passkeyName,
-      publicKeyCredential,
-      sessionId,
-    })
-      .catch(() => {
-        setError("set.errors.verificationFailed");
-        return;
-      })
-      .finally(() => {
-        setLoading(false);
+    let response;
+    try {
+      response = await verifyU2F({
+        u2fId,
+        passkeyName,
+        publicKeyCredential,
+        sessionId,
       });
+    } catch (e) {
+      setError("set.errors.verificationFailed");
+      setLoading(false);
+      return;
+    }
+    setLoading(false);
 
     if (response && "error" in response && response?.error) {
       setError(response?.error);
@@ -94,16 +96,17 @@ export function RegisterU2f({ sessionId, requestId, checkAfter }: Props) {
     setError("");
     setLoading(true);
 
-    const response = await addU2F({
-      sessionId,
-    })
-      .catch(() => {
-        setError("set.errors.credentialRegistrationFailed");
-        return;
-      })
-      .finally(() => {
-        setLoading(false);
+    let response;
+    try {
+      response = await addU2F({
+        sessionId,
       });
+    } catch (e) {
+      setError("set.errors.credentialRegistrationFailed");
+      setLoading(false);
+      return;
+    }
+    setLoading(false);
 
     if (response && "error" in response && response?.error) {
       setError(response?.error);

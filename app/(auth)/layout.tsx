@@ -6,17 +6,18 @@ import * as Tooltip from "@radix-ui/react-tooltip";
 /*--------------------------------------------*
  * Internal Aliases
  *--------------------------------------------*/
-import { I18n } from "@i18n";
+import { getSiteConfigFromHeaders } from "@lib/server/site-config";
+import { getSiteLink } from "@lib/site-config";
 import { serverTranslation } from "@i18n/server";
 import { Logout } from "@components/auth/Logout";
-import { SiteLogo } from "@components/icons/SiteLogo";
 import { Footer } from "@components/layout/footer/Footer";
 import { FooterLinks } from "@components/layout/footer/FooterLinks";
 import { GcdsHeader } from "@components/layout/gcds-header/GcdsHeader";
+import { SiteLink } from "@components/layout/site-header/SiteLink";
 import { ToastContainer } from "@components/ui/toast/Toast";
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "";
 
 export default async function AuthLayout({ children }: { children: React.ReactNode }) {
+  const siteConfig = await getSiteConfigFromHeaders();
   const {
     i18n: { language },
   } = await serverTranslation(["fip"]);
@@ -35,17 +36,9 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
             className={`rounded-2xl border-1 border-[#D1D5DB] bg-white p-10 tablet:w-[658px] has-[#auth-panel-wide]:tablet:w-[950px] laptop:w-[850px] has-[#auth-panel-wide]:laptop:w-[1200px]`}
           >
             <main id="content">
-              <a
-                className="mb-6 mr-10 inline-flex no-underline focus:bg-white"
-                href={`${APP_URL}/${language}/about`}
-              >
-                <span className="">
-                  <SiteLogo />
-                </span>
-                <span className="ml-3 inline-block text-[24px] font-semibold leading-10 text-[#1B00C2]">
-                  <I18n i18nKey="title" namespace="common" />
-                </span>
-              </a>
+              <div className="mb-6 mr-10 inline-flex">
+                <SiteLink href={getSiteLink(siteConfig, "about", language)} />
+              </div>
               <Tooltip.Provider>{children}</Tooltip.Provider>
               <ToastContainer autoClose={false} containerId="default" />
             </main>
@@ -53,7 +46,7 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
         </div>
       </div>
       <Footer>
-        <FooterLinks />
+        <FooterLinks siteConfig={siteConfig} />
       </Footer>
     </div>
   );

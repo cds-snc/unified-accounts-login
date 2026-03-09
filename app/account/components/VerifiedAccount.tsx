@@ -1,4 +1,5 @@
 "use client";
+
 /*--------------------------------------------*
  * Framework and Third-Party
  *--------------------------------------------*/
@@ -11,11 +12,19 @@ import { Trans, useTranslation } from "react-i18next";
  *--------------------------------------------*/
 import { logMessage } from "@lib/logger";
 import { logoutCurrentSession } from "@lib/server/session";
+import { getSiteLink, SiteConfig } from "@lib/site-config";
+import { cn } from "@lib/utils";
 import { Button } from "@components/ui/button/Button";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "";
-
-export const VerifiedAccount = ({ email }: { email: string }) => {
+export const VerifiedAccount = ({
+  email,
+  className,
+  siteConfig,
+}: {
+  email: string;
+  className?: string;
+  siteConfig: SiteConfig;
+}) => {
   const router = useRouter();
   const {
     t,
@@ -39,7 +48,7 @@ export const VerifiedAccount = ({ email }: { email: string }) => {
 
   return (
     <>
-      <div className="rounded-2xl border-1 border-[#D1D5DB] bg-white p-6">
+      <div className={cn("rounded-2xl border-1 border-[#D1D5DB] bg-white p-6", className)}>
         <div className="grid grid-cols-[1fr_auto] items-start gap-4">
           <div>
             <h3 className="mb-6">{t("verifiedAccount.title")}</h3>
@@ -55,7 +64,7 @@ export const VerifiedAccount = ({ email }: { email: string }) => {
               components={[
                 <strong key="0" />,
                 <Button key="1" theme="link" onClick={logoutAndRedirectToRegister} />,
-                <Link key="2" href={`${APP_URL}/${language}/support`} />,
+                <Link key="2" href={getSiteLink(siteConfig, "support", language)} />,
               ]}
             />
           </p>

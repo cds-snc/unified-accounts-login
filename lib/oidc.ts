@@ -9,8 +9,9 @@ import {
 import { Session } from "@zitadel/proto/zitadel/session/v2/session_pb";
 
 import { Cookie } from "@lib/cookies";
-import { sendLoginname, SendLoginnameCommand } from "@lib/server/username";
-import { createCallback, getLoginSettings } from "@lib/zitadel";
+import { toAuthRequestId, toOidcRequestId } from "@lib/oidc-request-id";
+import { sendLoginname, SendLoginnameCommand } from "@lib/server/loginname";
+import { createCallback } from "@lib/zitadel";
 
 import { isSessionValid } from "./session";
 
@@ -28,6 +29,9 @@ export async function loginWithOIDCAndSession({
   sessions,
   sessionCookies,
 }: LoginWithOIDCAndSession): Promise<{ error: string } | { redirect: string }> {
+  const authRequestId = toAuthRequestId(authRequest);
+  const oidcRequestId = toOidcRequestId(authRequest);
+
   console.log(`Login with session: ${sessionId} and authRequest: ${authRequest}`);
 
   const selectedSession = sessions.find((s) => s.id === sessionId);
@@ -49,7 +53,7 @@ export async function loginWithOIDCAndSession({
       const command: SendLoginnameCommand = {
         loginName: selectedSession.factors.user?.loginName,
         organization: selectedSession.factors?.user?.organizationId,
-        requestId: `oidc_${authRequest}`,
+        requestId: oidcRequestId,
       };
 
       const res = await sendLoginname(command);
@@ -72,7 +76,7 @@ export async function loginWithOIDCAndSession({
         const { callbackUrl } = await createCallback({
           serviceUrl,
           req: create(CreateCallbackRequestSchema, {
-            authRequestId: authRequest,
+            authRequestId,
             callbackKind: {
               case: "session",
               value: create(SessionSchema, session),
@@ -89,26 +93,8 @@ export async function loginWithOIDCAndSession({
         // handle already handled gracefully as these could come up if old emails with requestId are used (reset password, register emails etc.)
         console.error(error);
         if (error && typeof error === "object" && "code" in error && error?.code === 9) {
-          const loginSettings = await getLoginSettings({
-            serviceUrl,
-            organization: selectedSession.factors?.user?.organizationId,
-          });
-
-          if (loginSettings?.defaultRedirectUri) {
-            return { redirect: loginSettings.defaultRedirectUri };
-          }
-
-          const signedinUrl = "/account";
-
-          const params = new URLSearchParams();
-          if (selectedSession.factors?.user?.loginName) {
-            params.append("loginName", selectedSession.factors?.user?.loginName);
-          }
-          if (selectedSession.factors?.user?.organizationId) {
-            params.append("organization", selectedSession.factors?.user?.organizationId);
-          }
-          console.log("Redirecting to signed-in page:", signedinUrl + "?" + params.toString());
-          return { redirect: signedinUrl + "?" + params.toString() };
+          // Auth request already handled - signal this so the caller can redirect to login for a fresh flow
+          return { error: "Auth request already handled" };
         } else {
           return { error: "Unknown error occurred" };
         }

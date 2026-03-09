@@ -1,4 +1,5 @@
 "use client";
+
 /*--------------------------------------------*
  * Framework and Third-Party
  *--------------------------------------------*/
@@ -9,6 +10,7 @@ import { useRouter } from "next/navigation";
 /*--------------------------------------------*
  * Internal Aliases
  *--------------------------------------------*/
+import { getSiteLink, SiteConfig } from "@lib/site-config";
 import { buildUrlWithRequestId } from "@lib/utils";
 import { validateAccount } from "@lib/validationSchemas";
 import { useTranslation } from "@i18n";
@@ -22,6 +24,7 @@ import { Hint } from "@components/ui/form/Hint";
  * Parent Relative
  *--------------------------------------------*/
 import { useRegistration } from "../context/RegistrationContext";
+
 type FormState = {
   error?: string;
   validationErrors?: { fieldKey: string; fieldValue: string }[];
@@ -35,11 +38,10 @@ type FormState = {
 type Props = {
   organization: string;
   requestId?: string;
+  siteConfig: SiteConfig;
 };
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "";
-
-export function RegisterForm({ organization, requestId }: Props) {
+export function RegisterForm({ organization, requestId, siteConfig }: Props) {
   const { t, i18n } = useTranslation(["register", "validation", "errorSummary", "common"]);
   const { setRegistrationData } = useRegistration();
   const router = useRouter();
@@ -149,7 +151,9 @@ export function RegisterForm({ organization, requestId }: Props) {
 
         <p className="-mt-2 mb-10">
           {t("terms.agreement")}
-          <Link href={`${APP_URL}/${i18n.language}/terms-of-use`}>{t("terms.linkText")}</Link>
+          <Link href={getSiteLink(siteConfig, "termsOfUse", i18n.language)}>
+            {t("terms.linkText")}
+          </Link>
         </p>
 
         <div>
