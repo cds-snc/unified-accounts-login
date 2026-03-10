@@ -8,13 +8,11 @@ import { headers } from "next/headers";
  * Internal Aliases
  *--------------------------------------------*/
 import { getOriginalHostFromHeaders } from "@lib/server/host";
-import { resolveSiteConfigByHost } from "@lib/site-config";
+import { getSiteLink, resolveSiteConfigByHost } from "@lib/site-config";
 import { serverTranslation } from "@i18n/server";
 import { Logout } from "@components/auth/Logout";
 import { Footer } from "@components/layout/footer/Footer";
-import { FooterLinks } from "@components/layout/footer/FooterLinks";
 import { SiteHeader } from "@components/layout/site-header/SiteHeader";
-import LanguageToggle from "@components/ui/language-toggle/LanguageToggle";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { t } = await serverTranslation("account");
@@ -38,14 +36,21 @@ export default async function Layout({ children }: { children: React.ReactNode }
   const _headers = await headers();
   const resolvedHost = getOriginalHostFromHeaders(_headers);
   const siteConfig = resolveSiteConfigByHost(resolvedHost);
+  const {
+    t,
+    i18n: { language },
+  } = await serverTranslation(["footer"]);
+
+  const contextualLinks = {
+    [t("about.desc", { ns: "footer" })]: getSiteLink(siteConfig, "about", language),
+    [t("terms-of-use.desc", { ns: "footer" })]: getSiteLink(siteConfig, "termsOfUse", language),
+    [t("sla.desc", { ns: "footer" })]: getSiteLink(siteConfig, "sla", language),
+  };
 
   return (
     <div className="min-h-screen bg-gray-soft">
       <SiteHeader>
-        <div className="flex items-center gap-4">
-          <Logout className="mr-2 text-sm" />
-          <LanguageToggle />
-        </div>
+        <Logout className="mr-2 text-sm" />
       </SiteHeader>
       <main id="content" className="mx-auto max-w-[71.25rem] px-6 py-2 laptop:px-0">
         <div className="mb-20 grid items-start gap-6 py-4 tablet:grid-cols-[22rem_1fr] tablet:gap-8">
@@ -55,9 +60,10 @@ export default async function Layout({ children }: { children: React.ReactNode }
           <section className="min-w-0">{children}</section>
         </div>
       </main>
-      <Footer>
-        <FooterLinks siteConfig={siteConfig} />
-      </Footer>
+      <Footer
+        contextualHeading={t("ariaLabel", { ns: "footer" })}
+        contextualLinks={contextualLinks}
+      />
     </div>
   );
 }

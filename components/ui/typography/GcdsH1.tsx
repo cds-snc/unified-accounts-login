@@ -1,7 +1,8 @@
 /*--------------------------------------------*
- * Internal Aliases
+ * Framework and Third-Party
  *--------------------------------------------*/
-import { cn } from "@lib/utils";
+import { GcdsHeading } from "@gcds-core/components-react";
+
 export const GcdsH1 = ({
   children,
   tabIndex,
@@ -12,8 +13,8 @@ export const GcdsH1 = ({
   className?: string;
 }) => {
   return (
-    <h1 tabIndex={tabIndex || -1} className={cn(className)}>
+    <GcdsHeading tag="h1" {...(tabIndex !== undefined ? { tabIndex } : {})} className={className}>
       {children}
-    </h1>
+    </GcdsHeading>
   );
 };

@@ -4,8 +4,8 @@
  * Framework and Third-Party
  *--------------------------------------------*/
 import { useActionState, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { GcdsInput, GcdsLink } from "@gcds-core/components-react";
 
 /*--------------------------------------------*
  * Internal Aliases
@@ -15,8 +15,7 @@ import { buildUrlWithRequestId } from "@lib/utils";
 import { validateUsernameAndPassword } from "@lib/validationSchemas";
 import { useTranslation } from "@i18n";
 import { SubmitButtonAction } from "@components/ui/button/SubmitButton";
-import { Alert, ErrorStatus, Label, TextInput } from "@components/ui/form";
-import { ErrorMessage } from "@components/ui/form/ErrorMessage";
+import { Alert, ErrorStatus } from "@components/ui/form";
 import { ErrorSummary } from "@components/ui/form/ErrorSummary";
 
 /*--------------------------------------------*
@@ -107,7 +106,7 @@ export function LoginForm({ requestId }: Props) {
 
   // Helper to get field error
   const getError = (fieldKey: string) => {
-    return state.validationErrors?.find((e) => e.fieldKey === fieldKey)?.fieldValue || "";
+    return state.validationErrors?.find((e) => e.fieldKey === fieldKey)?.fieldValue || undefined;
   };
 
   return (
@@ -129,58 +128,41 @@ export function LoginForm({ requestId }: Props) {
       <form id="login" action={formAction} noValidate>
         {/* Username field */}
         <div className="mb-4">
-          <div className="gcds-input-wrapper">
-            <Label id={"label-username"} htmlFor={"username"} className="required" required>
-              {t("form.label")}
-            </Label>
-            <div className="mb-4 text-sm text-black" id="login-description">
-              {t("form.description")}
-            </div>
-            {getError("username") && (
-              <ErrorMessage id={"errorMessageUsername"}>{getError("username")}</ErrorMessage>
-            )}
-            <TextInput
-              type={"email"}
-              id={"username"}
-              required
-              autoComplete={"email"}
-              defaultValue={state.formData?.username || ""}
-              ariaDescribedbyIds={getError("username") ? ["errorMessageUsername"] : undefined}
-            />
-          </div>
+          <GcdsInput
+            inputId="username"
+            name="username"
+            label={t("form.label", { ns: "start" })}
+            hint={t("form.description", { ns: "start" })}
+            type="email"
+            required
+            autocomplete="email"
+            value={state.formData?.username || ""}
+            errorMessage={getError("username")}
+          />
         </div>
 
         {/* Password field */}
         <div className="mb-4">
-          <div className="gcds-input-wrapper">
-            <Label id={"label-password"} htmlFor={"password"} className="required" required>
-              {t("form.passwordLabel")}
-            </Label>
-            {getError("password") && (
-              <ErrorMessage id={"errorMessagePassword"}>{getError("password")}</ErrorMessage>
-            )}
-            <TextInput
-              type={"password"}
-              id={"password"}
-              required
-              autoComplete={"current-password"}
-              ariaDescribedbyIds={getError("password") ? ["errorMessagePassword"] : undefined}
-            />
+          <GcdsInput
+            inputId="password"
+            name="password"
+            label={t("form.passwordLabel", { ns: "start" })}
+            type="password"
+            required
+            autocomplete="current-password"
+            errorMessage={getError("password")}
+          />
 
-            {/* Forgot password link */}
-            <div className="mt-2">
-              <Link
-                href={buildUrlWithRequestId("/password/reset", requestId)}
-                className="text-sm underline"
-              >
-                {t("form.forgotPasswordLink")}
-              </Link>
-            </div>
+          {/* Forgot password link */}
+          <div className="mt-2">
+            <GcdsLink href={buildUrlWithRequestId("/password/reset", requestId)}>
+              {t("form.forgotPasswordLink", { ns: "start" })}
+            </GcdsLink>
           </div>
         </div>
 
         <SubmitButtonAction disabled={loading}>
-          {loading ? t("form.signingIn") : t("form.submit")}
+          {loading ? t("form.signingIn", { ns: "start" }) : t("form.submit", { ns: "start" })}
         </SubmitButtonAction>
       </form>
     </div>

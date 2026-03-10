@@ -6,6 +6,7 @@
 import { useActionState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { GcdsInput } from "@gcds-core/components-react";
 import { create } from "@zitadel/client";
 import { ChecksSchema } from "@zitadel/proto/zitadel/session/v2/session_service_pb";
 import { QRCodeSVG } from "qrcode.react";
@@ -20,7 +21,7 @@ import { validateTotpCode } from "@lib/validationSchemas";
 import { getZitadelUiError } from "@lib/zitadel-errors";
 import { I18n, useTranslation } from "@i18n";
 import { SubmitButtonAction } from "@components/ui/button/SubmitButton";
-import { Alert, ErrorStatus, Label, TextInput } from "@components/ui/form";
+import { Alert, ErrorStatus } from "@components/ui/form";
 
 /*--------------------------------------------*
  * Local Relative
@@ -143,18 +144,14 @@ export function TotpRegister({ uri, loginName, requestId, organization, checkAft
               </div>
             )}
 
-            <div className="gcds-input-wrapper">
-              <Label id={"label-code"} htmlFor={"code"} className="required" required>
-                {t("set.labels.code")}
-              </Label>
-              <TextInput
-                type={"text"}
-                id={"code"}
-                required
-                defaultValue={""}
-                autoComplete="one-time-code"
-              />
-            </div>
+            <GcdsInput
+              inputId="code"
+              name="code"
+              label={t("set.labels.code")}
+              type="text"
+              required
+              autocomplete="one-time-code"
+            />
 
             <SubmitButtonAction>
               <I18n i18nKey="set.submit" namespace="otp" />

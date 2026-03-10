@@ -4,22 +4,18 @@
  * Framework and Third-Party
  *--------------------------------------------*/
 import { useRouter } from "next/navigation";
+import { GcdsButton } from "@gcds-core/components-react";
 
 /*--------------------------------------------*
  * Internal Aliases
  *--------------------------------------------*/
 import { I18n } from "@i18n";
 
-/*--------------------------------------------*
- * Local Relative
- *--------------------------------------------*/
-import { Button } from "./Button";
-import { Theme } from "./themes";
-export function BackButton({ theme = "secondary" }: { theme?: Theme }) {
+export function BackButton({ ...rest }: Record<string, unknown>) {
   const router = useRouter();
   return (
-    <Button onClick={() => router.back()} type="button" theme={theme}>
+    <GcdsButton buttonRole="secondary" type="button" onClick={() => router.back()} {...rest}>
       <I18n i18nKey="button.back" namespace="common" />
-    </Button>
+    </GcdsButton>
   );
 }

@@ -11,7 +11,6 @@ import { getSiteLink } from "@lib/site-config";
 import { serverTranslation } from "@i18n/server";
 import { Logout } from "@components/auth/Logout";
 import { Footer } from "@components/layout/footer/Footer";
-import { FooterLinks } from "@components/layout/footer/FooterLinks";
 import { GcdsHeader } from "@components/layout/gcds-header/GcdsHeader";
 import { SiteLink } from "@components/layout/site-header/SiteLink";
 import { ToastContainer } from "@components/ui/toast/Toast";
@@ -19,12 +18,19 @@ import { ToastContainer } from "@components/ui/toast/Toast";
 export default async function AuthLayout({ children }: { children: React.ReactNode }) {
   const siteConfig = await getSiteConfigFromHeaders();
   const {
+    t,
     i18n: { language },
-  } = await serverTranslation(["fip"]);
+  } = await serverTranslation(["fip", "footer"]);
+
+  const contextualLinks = {
+    [t("about.desc", { ns: "footer" })]: getSiteLink(siteConfig, "about", language),
+    [t("terms-of-use.desc", { ns: "footer" })]: getSiteLink(siteConfig, "termsOfUse", language),
+    [t("sla.desc", { ns: "footer" })]: getSiteLink(siteConfig, "sla", language),
+  };
 
   return (
     <div className="flex min-h-full flex-col bg-gray-soft">
-      <GcdsHeader language={language}>
+      <GcdsHeader>
         <div className="inline-block">
           <Logout className="mr-2 text-sm" />
         </div>
@@ -45,9 +51,10 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
           </div>
         </div>
       </div>
-      <Footer>
-        <FooterLinks siteConfig={siteConfig} />
-      </Footer>
+      <Footer
+        contextualHeading={t("ariaLabel", { ns: "footer" })}
+        contextualLinks={contextualLinks}
+      />
     </div>
   );
 }

@@ -13,6 +13,7 @@ import { serverTranslation } from "@i18n/server";
 /*--------------------------------------------*
  * Styles
  *--------------------------------------------*/
+import "@gcds-core/components-react/gcds.css";
 import "@root/styles/app.scss";
 export const dynamic = "force-dynamic";
 

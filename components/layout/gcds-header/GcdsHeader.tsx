@@ -1,37 +1,28 @@
+"use client";
+
+/*--------------------------------------------*
+ * Framework and Third-Party
+ *--------------------------------------------*/
+import { GcdsHeader as OfficialGcdsHeader } from "@gcds-core/components-react";
+
 /*--------------------------------------------*
  * Internal Aliases
  *--------------------------------------------*/
 import LanguageToggle from "@components/ui/language-toggle/LanguageToggle";
-import { SkipLink } from "@components/ui/skip-link/SkipLink";
 
-/*--------------------------------------------*
- * Local Relative
- *--------------------------------------------*/
-import { BrandContainer } from "./BrandContainer";
-import { Fip } from "./Fip";
 export const GcdsHeader = ({
-  language,
-  showLanguageToggle = true,
-  skipLink = true,
   children,
+  skipToHref = "#content",
 }: {
-  language: string;
-  showLanguageToggle?: boolean;
-  skipLink?: boolean;
   children?: React.ReactNode;
+  skipToHref?: string;
 }) => {
   return (
-    <div className="gcds-header__container">
-      <header className="gcds-header">
-        {skipLink && <SkipLink />}
-        <BrandContainer>
-          <Fip language={language} />
-          <div className="brand__toggle">
-            {children}
-            {showLanguageToggle && <LanguageToggle />}
-          </div>
-        </BrandContainer>
-      </header>
-    </div>
+    <OfficialGcdsHeader skipToHref={skipToHref}>
+      <div slot="toggle" className="flex items-center gap-2">
+        {children}
+        <LanguageToggle />
+      </div>
+    </OfficialGcdsHeader>
   );
 };

@@ -5,6 +5,7 @@
  *--------------------------------------------*/
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { GcdsInput } from "@gcds-core/components-react";
 import { create, JsonObject } from "@zitadel/client";
 import {
   RequestChallengesSchema,
@@ -23,7 +24,7 @@ import { I18n } from "@i18n";
 import { useTranslation } from "@i18n/client";
 import { BackButton } from "@components/ui/button/BackButton";
 import { SubmitButton } from "@components/ui/button/SubmitButton";
-import { Alert, ErrorStatus, Label, TextInput } from "@components/ui/form";
+import { Alert, ErrorStatus } from "@components/ui/form";
 
 /*--------------------------------------------*
  * Local Relative
@@ -341,28 +342,16 @@ export function RegisterU2f({ sessionId, requestId, checkAfter }: Props) {
       )}
 
       <div className="mb-4">
-        <div className="gcds-input-wrapper">
-          <Label
-            id={"label-keyName"}
-            htmlFor={"keyName"}
-            hint={
-              <I18n
-                i18nKey="set.hint"
-                namespace="u2f"
-                tagName="div"
-                className="text-base font-normal text-gcds-grayscale-500"
-              />
-            }
-          >
-            <I18n i18nKey="set.label" namespace="u2f" />
-          </Label>
-          <TextInput
-            id={"keyName"}
-            type="text"
-            onChange={(e) => setKeyName((e.target as HTMLInputElement).value)}
-            placeholder={t("set.placeholder")}
-          />
-        </div>
+        <GcdsInput
+          inputId="keyName"
+          name="keyName"
+          label={t("set.label")}
+          hint={t("set.hint")}
+          type="text"
+          onGcdsInput={(e) =>
+            setKeyName((e as unknown as React.ChangeEvent<HTMLInputElement>).target.value)
+          }
+        />
       </div>
 
       <div className="mt-8 flex w-full flex-row items-center">

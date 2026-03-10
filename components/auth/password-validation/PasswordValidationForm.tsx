@@ -4,6 +4,7 @@
  * Framework and Third-Party
  *--------------------------------------------*/
 import { useActionState, useState } from "react";
+import { GcdsInput } from "@gcds-core/components-react";
 import { PasswordComplexitySettings } from "@zitadel/proto/zitadel/settings/v2/password_settings_pb";
 import * as v from "valibot";
 
@@ -13,10 +14,7 @@ import * as v from "valibot";
 import { codeSchema, confirmPasswordSchema, passwordSchema } from "@lib/validationSchemas";
 import { I18n, useTranslation } from "@i18n";
 import { SubmitButtonAction } from "@components/ui/button/SubmitButton";
-import { Label, TextInput } from "@components/ui/form";
-import { ErrorMessage } from "@components/ui/form/ErrorMessage";
 import { ErrorSummary } from "@components/ui/form/ErrorSummary";
-import { Hint } from "@components/ui/form/Hint";
 
 /*--------------------------------------------*
  * Local Relative
@@ -135,69 +133,50 @@ export function PasswordValidationForm({
       <form className="w-full" action={formAction} noValidate onChange={() => setDirty(true)}>
         <div className="mb-4 grid grid-cols-1 gap-4 pt-4">
           {requireConfirmationCode && (
-            <div className="gcds-input-wrapper">
-              <Label htmlFor="code" required>
-                {t("reset.labels.confirmationCode")}
-              </Label>
-              {getError("code") && (
-                <ErrorMessage id={"errorMessageCode"}>{t(getError("code"))}</ErrorMessage>
-              )}
-              <TextInput
-                id="code"
-                className="w-full"
-                type="text"
-                required
-                autoComplete="one-time-code"
-              />
-            </div>
+            <GcdsInput
+              inputId="code"
+              name="code"
+              label={t("reset.labels.confirmationCode")}
+              type="text"
+              required
+              autocomplete="one-time-code"
+              errorMessage={getError("code") ? t(getError("code")) : undefined}
+            />
           )}
-          <div className="gcds-input-wrapper">
-            <Label htmlFor="password" required>
-              {t("create.labels.password")}
-            </Label>
-            {getError("password") && (
-              <ErrorMessage id={"errorMessagePassword"}>{t(getError("password"))}</ErrorMessage>
+          <div>
+            <div className="mb-2">
+              <I18n i18nKey="create.passwordHint" namespace="password" />
+            </div>
+            {passwordComplexitySettings && (
+              <PasswordComplexity
+                passwordComplexitySettings={passwordComplexitySettings}
+                password={watchPassword}
+                id="password-complexity-requirements"
+                ready={dirty}
+              />
             )}
-            <Hint>
-              <div className="mb-2">
-                <I18n i18nKey="create.passwordHint" namespace="password" />
-              </div>
-              {passwordComplexitySettings && (
-                <PasswordComplexity
-                  passwordComplexitySettings={passwordComplexitySettings}
-                  password={watchPassword}
-                  id="password-complexity-requirements"
-                  ready={dirty}
-                />
-              )}
-            </Hint>
-            <TextInput
-              id="password"
-              className="w-full"
+            <GcdsInput
+              inputId="password"
+              name="password"
+              label={t("create.labels.password")}
               type="password"
               required
-              ariaDescribedbyIds={["password-complexity-requirements"]}
-              defaultValue={state.formData?.password ?? ""}
-              onChange={(e) => setWatchPassword(e.target.value)}
+              value={state.formData?.password ?? ""}
+              errorMessage={getError("password") ? t(getError("password")) : undefined}
+              onGcdsInput={(e) =>
+                setWatchPassword((e as unknown as React.ChangeEvent<HTMLInputElement>).target.value)
+              }
             />
           </div>
-          <div className="gcds-input-wrapper">
-            <Label htmlFor="confirmPassword" required>
-              {t("create.labels.confirmPassword")}
-            </Label>
-            {getError("confirmPassword") && (
-              <ErrorMessage id={"errorMessageConfirmPassword"}>
-                {getError("confirmPassword")}
-              </ErrorMessage>
-            )}
-            <TextInput
-              id="confirmPassword"
-              className="w-full"
-              type="password"
-              required
-              defaultValue={state.formData?.confirmPassword ?? ""}
-            />
-          </div>
+          <GcdsInput
+            inputId="confirmPassword"
+            name="confirmPassword"
+            label={t("create.labels.confirmPassword")}
+            type="password"
+            required
+            value={state.formData?.confirmPassword ?? ""}
+            errorMessage={getError("confirmPassword") || undefined}
+          />
         </div>
 
         <SubmitButtonAction>{t("button.continue", { ns: "common" })}</SubmitButtonAction>

@@ -4,6 +4,7 @@
  * Framework and Third-Party
  *--------------------------------------------*/
 import { useActionState } from "react";
+import { GcdsInput } from "@gcds-core/components-react";
 
 /*--------------------------------------------*
  * Internal Aliases
@@ -12,8 +13,7 @@ import { getSafeErrorMessage } from "@lib/safeErrorMessage";
 import { validateUsername } from "@lib/validationSchemas";
 import { useTranslation } from "@i18n/client";
 import { SubmitButtonAction } from "@components/ui/button/SubmitButton";
-import { Alert, ErrorStatus, Label, TextInput } from "@components/ui/form";
-import { ErrorMessage } from "@components/ui/form/ErrorMessage";
+import { Alert, ErrorStatus } from "@components/ui/form";
 import { ErrorSummary } from "@components/ui/form/ErrorSummary";
 
 /*--------------------------------------------*
@@ -121,24 +121,16 @@ export const UserNameForm = ({ organization, requestId, onSuccess }: Props) => {
 
       <form id="login" action={formAction} noValidate>
         <div className="mb-4">
-          <div className="gcds-input-wrapper">
-            <Label id={"label-username"} htmlFor={"username"} className="required" required>
-              {t("form.label")}
-            </Label>
-            <div className="mb-4 text-sm text-black" id="login-description">
-              {t("form.description")}
-            </div>
-            {getError("username") && (
-              <ErrorMessage id={"errorMessageUsername"}>{getError("username")}</ErrorMessage>
-            )}
-            <TextInput
-              type={"email"}
-              id={"username"}
-              required
-              defaultValue={state.formData?.username || ""}
-              ariaDescribedbyIds={getError("username") ? ["errorMessageUsername"] : undefined}
-            />
-          </div>
+          <GcdsInput
+            inputId="username"
+            name="username"
+            label={t("form.label", { ns: "start" })}
+            hint={t("form.description", { ns: "start" })}
+            type="email"
+            required
+            value={state.formData?.username || ""}
+            errorMessage={getError("username") || undefined}
+          />
         </div>
 
         <SubmitButtonAction>{t("button.continue")}</SubmitButtonAction>
