@@ -57,5 +57,3 @@ jobs:
           --platform linux/arm64 \
           -t "${{ env.REGISTRY_PREFIX }}/idp-login:sha-$GITHUB_SHA" \
           -t "${{ env.REGISTRY_PREFIX }}/idp-login:latest" \
-          -f ./docker/idp-login/Dockerfile \
-          ./docker/idp-login
