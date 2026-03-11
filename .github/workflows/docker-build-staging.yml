@@ -5,10 +5,25 @@ on:
     branches:
       - main
     paths:
-      - "!.devcontainer"
-      - "!.github" 
-      - "!.husky"
-      - "!.vscode"
+      - "!.devcontainer/**"
+      - "!.github/**"
+      - "!.husky/**"
+      - "!.vscode/**"
+      - "!.next/**"
+      - "!node_modules/**"
+      - "!**/*.test.ts"
+      - "!**/*.test.tsx"
+      - "!**/*.spec.ts"
+      - "!**/*.spec.tsx"
+      - "!**/__tests__/**"
+      - "!**/*.md"
+      - "!LICENSE"
+      - "!.env*"
+      - "!.eslintrc*"
+      - "!.prettierrc*"
+      - "!jest.config.*"
+      - "!cypress/**"
+      - "!.gitignore"
       - ".github/workflows/docker-build-staging.yml"
 
 env: 
