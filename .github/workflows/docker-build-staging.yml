@@ -5,7 +5,10 @@ on:
     branches:
       - main
     paths:
-      - "docker/**"
+      - "!.devcontainer"
+      - "!.github" 
+      - "!.husky"
+      - "!.vscode"
       - ".github/workflows/docker-build-staging.yml"
 
 env: 
