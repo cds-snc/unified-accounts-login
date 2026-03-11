@@ -31,6 +31,8 @@ export const VerifiedAccount = ({
     i18n: { language },
   } = useTranslation("account");
 
+  const supportLink = getSiteLink(siteConfig, "support", language);
+
   const logoutAndRedirectToRegister = async () => {
     try {
       const result = await logoutCurrentSession({ postLogoutRedirectUri: "/register" });
@@ -57,17 +59,26 @@ export const VerifiedAccount = ({
               <em>{email}</em>
             </div>
           </div>
-          <p className="max-w-48 self-start text-left">
-            <Trans
-              i18nKey="verifiedAccount.changeMessage"
-              ns="account"
-              components={[
-                <strong key="0" />,
-                <Button key="1" theme="link" onClick={logoutAndRedirectToRegister} />,
-                <Link key="2" href={getSiteLink(siteConfig, "support", language)} />,
-              ]}
-            />
-          </p>
+          {supportLink ? (
+            <p className="max-w-48 self-start text-left">
+              <Trans
+                i18nKey="verifiedAccount.changeMessage"
+                ns="account"
+                components={[
+                  <strong key="0" />,
+                  <Button key="1" theme="link" onClick={logoutAndRedirectToRegister} />,
+                  <Link key="2" href={supportLink} />,
+                ]}
+              />
+            </p>
+          ) : (
+            <p className="max-w-48 self-start text-left">
+              <strong>{t("verifiedAccount.cannotBeChanged")}</strong>{" "}
+              <Button theme="link" onClick={logoutAndRedirectToRegister}>
+                {t("verifiedAccount.createNewAccount")}
+              </Button>
+            </p>
+          )}
         </div>
       </div>
     </>
