@@ -12,7 +12,7 @@ env:
 
 permissions:
   id-token: write
-  contents: write
+  contents: read
   
 jobs:
   docker-push:
@@ -48,7 +48,6 @@ jobs:
   
     - name: Build and push image
       run: |
-        make cert
         docker buildx build \
           --push \
           --platform linux/arm64 \
