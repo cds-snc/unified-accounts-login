@@ -54,4 +54,4 @@ jobs:
           -t "${{ env.REGISTRY_PREFIX }}/idp-login:sha-$GITHUB_SHA" \
           -t "${{ env.REGISTRY_PREFIX }}/idp-login:latest" \
           -f ./docker/idp/Dockerfile \
-          ./docker/idp
+          .
