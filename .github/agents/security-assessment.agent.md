@@ -20,9 +20,8 @@ This is a **Next.js 16 App Router** identity portal integrating with **Zitadel**
 
 1. **Plan your work** using the todo list tool — break each OWASP category into a tracked task
 2. **Read before reporting** — never flag a finding without reading the relevant code
-3. **Cite evidence** — every finding includes file path + relevant line range
-4. **Distinguish confirmed from potential** — clearly separate confirmed vulnerabilities from areas requiring runtime verification
-5. **Prioritize by impact** — focus on issues that could lead to real breaches in a government identity context
+3. **Cite evidence** — every finding includes file path, relevant line range, curl command to reproduce, and/or documentation link
+4. **Prioritize by impact** — focus on issues that could lead to real breaches in a government identity context
 
 ---
 
@@ -31,62 +30,60 @@ This is a **Next.js 16 App Router** identity portal integrating with **Zitadel**
 Work through each category below. Mark each as completed in your todo list only after reading the relevant code.
 
 ### A01 — Broken Access Control
-- [ ] **Route protection**: Are all non-public routes guarded by session validation? Check `app/(auth)/layout.tsx`, `app/account/layout.tsx`, and middleware
-- [ ] **Server action authorization**: Do server actions in `lib/server/`, `app/(auth)/actions.ts`, `app/account/actions.ts` verify the session belongs to the requesting user before mutating data?
-- [ ] **Zitadel userId binding**: Is `userId` from the cookie cross-checked against the Zitadel session before privileged operations? Check `lib/cookies.ts` Cookie type and usages
-- [ ] **OIDC/SAML state integrity**: Is the OIDC `requestId` / SAML request properly bound to the session to prevent cross-request injection? Check `app/(api)/login/route.ts` and `lib/oidc.ts`
+- [ ] **Route protection**: Are all non-public routes guarded by session validation?
+- [ ] **Server action authorization**: Do server actions verify the session belongs to the requesting user before mutating data?
+- [ ] **Zitadel userId binding**: Is the user cross-checked against the Zitadel session before privileged operations?
+- [ ] **OIDC/SAML state integrity**: Is the OIDC/SAML request properly bound to the session to prevent cross-request injection?
 
 ### A02 — Cryptographic Failures
 - [ ] **Cookie security flags**: Are `sessions` cookies set with `httpOnly`, `secure`, and appropriate `sameSite`? Check `lib/cookies.ts`
-- [ ] **Sensitive data in cookies**: Is any PII beyond the minimum (loginName, userId, token) stored in the session cookie? Review the `Cookie` type
+- [ ] **Sensitive data in cookies**: Is any PII beyond the minimum (loginName, userId, token) stored in the session cookie?
 - [ ] **Token storage**: Are Zitadel session tokens handled server-side only, never exposed to the client?
-- [ ] **HTTPS enforcement**: Is HSTS configured? Check `next.config.ts` security headers
+- [ ] **HTTPS enforcement**: Is HSTS configured?
 
 ### A03 — Injection
-- [ ] **XSS via user-controlled rendering**: Are any server-rendered values (loginName, error messages, IDP names, organization) passed to React without sanitization? Check `lib/idp.ts`, `lib/safeErrorMessage.ts`, and auth page components
-- [ ] **CSP configuration**: Does `lib/cspScripts.ts` produce a CSP that prevents XSS? Check for `unsafe-inline`, overly broad `connect-src`, and whether the nonce is used in middleware
-- [ ] **Zitadel API inputs**: Are user-controlled values passed to Zitadel API functions validated before use? Check `lib/zitadel.ts` for any string interpolation into gRPC requests
-- [ ] **Log injection**: Does `lib/logger.ts` or callers of `logMessage` construct log entries from user input without sanitization?
+- [ ] **XSS via user-controlled rendering**: Are any server-rendered values passed to React without sanitization?
+- [ ] **CSP configuration**: Are CSP headers configured to prevent XSS?
+- [ ] **Zitadel API inputs**: Are user-controlled values passed to Zitadel API functions validated before use?
+- [ ] **Log injection**: Does logging occur from user input without sanitization?
 
 ### A04 — Insecure Design
-- [ ] **MFA bypass paths**: Review `app/(auth)/mfa/`, `otp/`, and `u2f/` — can MFA be skipped by navigating directly to a post-MFA route?
-- [ ] **Password reset flow**: Review `app/(auth)/password/` — is there a rate limit or token expiry enforced?
+- [ ] **MFA bypass paths**: Can MFA be skipped by navigating directly to a post-MFA route?
+- [ ] **Password reset flow**: Is there a rate limit or token expiry enforced?
 - [ ] **Account enumeration**: Does the login or registration flow reveal whether an email exists via different error messages or timing?
 - [ ] **Session fixation**: Is the session ID regenerated after successful authentication?
 
 ### A05 — Security Misconfiguration
-- [ ] **Security headers**: Audit all headers in `next.config.ts` — is CSP applied? Is `X-Frame-Options: DENY` consistent with the `frame-ancestors 'none'` CSP directive? Is `Referrer-Policy` set?
-- [ ] **iFrame embedding**: The `iFrameEnabled` path in `lib/cookies.ts` sets `sameSite: none` — is this gated properly and does it weaken CSRF protection?
-- [ ] **Environment variable exposure**: Are any secrets or internal URLs exposed via `NEXT_PUBLIC_*` env vars? Check `constants/config.ts` and `next.config.ts`
-- [ ] **Error page information disclosure**: Do `app/error.tsx` and `app/(auth)/error.tsx` leak stack traces or internal details?
-- [ ] **`/api/healthy` endpoint**: Does `app/(api)/healthy/` expose sensitive system information?
+- [ ] **Security headers**: Audit all headers for best practices (Content-Security-Policy, X-Frame-Options, X-Content-Type-Options, Referrer-Policy) in `next.config.ts`.
+- [ ] **Environment variable exposure**: Are any secrets or internal URLs exposed via `NEXT_PUBLIC_*` env vars?
+- [ ] **Error page information disclosure**: Do the error pages leak stack traces or internal details?
 
 ### A06 — Vulnerable and Outdated Components
-- [ ] **Dependency audit**: Run `pnpm audit` and check for high/critical severity vulnerabilities in `package.json` dependencies, particularly in authentication-related packages (`@zitadel/*`, `next`, `next-auth` if present)
-- [ ] **Pinned versions**: Are dependency versions pinned or do they use `^`/`~` ranges that could pull in vulnerable minor/patch versions?
+- [ ] **Dependency audit**: Run `pnpm audit` and check for high/critical severity vulnerabilities in `package.json` dependencies.
+- [ ] **Pinned versions**: Are dependency versions pinned with a lock file?
 
 ### A07 — Identification and Authentication Failures
-- [ ] **Session expiry validation**: Check `lib/session.ts` `checkSessionFactorValidity` — is the Zitadel `expirationDate` validated on every protected request or only at login?
+- [ ] **Session expiry validation**: Check if the Zitadel session is validated on every protected request or only at login?
 - [ ] **Invalid session handling**: What happens when a Zitadel session token is invalid or revoked — does the app fail open or fail closed?
-- [ ] **Logout completeness**: Does logout in `components/auth/Logout.tsx` and related actions revoke the Zitadel server-side session, not just clear the cookie?
+- [ ] **Logout completeness**: Does logout revoke the Zitadel server-side session, not just clear the cookie?
 - [ ] **Brute force protection**: Is there any rate limiting on password or OTP submission beyond what Zitadel provides?
 
 ### A08 — Software and Data Integrity Failures
-- [ ] **Server action input validation**: Do server actions use Valibot schemas (`lib/validationSchemas.ts`) to validate all inputs before processing?
-- [ ] **CSRF protection**: Next.js App Router server actions have built-in CSRF protection via `Origin` header checking — verify this is not disabled or bypassed
+- [ ] **Server action input validation**: Do server actions use Valibot schemas to validate all inputs before processing?
+- [ ] **CSRF protection**: Verify that the Next.js App Router server actions have built-in CSRF protection
 - [ ] **Supply chain**: Check `pnpm-lock.yaml` is committed (prevents lockfile injection) and that no `postinstall` scripts in `package.json` execute arbitrary code
 
 ### A09 — Security Logging and Monitoring Failures
-- [ ] **Authentication events**: Are login success, login failure, MFA success/failure, and password changes logged via `logMessage`?
+- [ ] **Authentication events**: Are login success, login failure, MFA success/failure, and password changes logged?
 - [ ] **What is NOT logged**: Check for security-sensitive paths where errors are silently swallowed without logging
-- [ ] **PII in logs**: Does any `logMessage` call include user PII (email, name, userId) that could create a data exposure risk in log aggregation?
-- [ ] **Structured logging**: Review `lib/logger.ts` — are log entries structured in a way that supports alerting and correlation?
+- [ ] **PII in logs**: Does any logging call include user PII (email, name, userId) that could create a data exposure risk in log aggregation?
+- [ ] **Structured logging**: Review that log entries are structured in a way that supports alerting and correlation?
 
 ### A10 — Server-Side Request Forgery (SSRF)
-- [ ] **`serviceUrl` validation**: The `serviceUrl` derived from headers (`lib/service-url.ts`) is used in all Zitadel API calls — validate that it cannot be controlled by a user-supplied header to redirect requests to internal services
-- [ ] **`notify.ts` HTTP calls**: Review `lib/notify.ts` for GC Notify REST API calls — is the target URL hardcoded or can it be influenced by user input?
-- [ ] **IDP redirect URLs**: Check `lib/idp.ts` — are external IDP URLs validated against an allowlist before redirect?
-- [ ] **`redirect-validator.ts` coverage**: Is `isValidRelativeUrl` / `getSafeRedirectUrl` used consistently across all redirect points, or are there bypass paths?
+- [ ] **`serviceUrl` validation**: The `serviceUrl` derived from headers is used in all Zitadel API calls — validate that it cannot be controlled by a user-supplied header to redirect requests to internal services
+- [ ] **`notify.ts` HTTP calls**: Review the GC Notify REST API calls — is the target URL hardcoded or can it be influenced by user input?
+- [ ] **IDP redirect URLs**: Are external IDP URLs validated against an allowlist before redirect?
+- [ ] **`redirect-validator.ts` coverage**: Is redirect validation used consistently across all redirect points, or are there bypass paths?
 
 ---
 
