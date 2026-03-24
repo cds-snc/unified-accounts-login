@@ -11,6 +11,7 @@ import { usePathname } from "next/navigation";
  *--------------------------------------------*/
 import { getSiteLink, SiteConfig } from "@lib/site-config";
 import { useTranslation } from "@i18n";
+import { ExternalLink } from "@components/ui/external-link/ExternalLink";
 
 export function AccountNavigation({ siteConfig }: { siteConfig: SiteConfig }) {
   const pathname = usePathname();
@@ -20,7 +21,8 @@ export function AccountNavigation({ siteConfig }: { siteConfig: SiteConfig }) {
   } = useTranslation("account");
 
   const isAccountPage = pathname === "/account" || pathname.includes("/account/");
-  const profileUrl = getSiteLink(siteConfig, "profile", language);
+
+  const gcFormsLink = getSiteLink(siteConfig, "gcForms", language);
 
   return (
     <nav
@@ -32,7 +34,7 @@ export function AccountNavigation({ siteConfig }: { siteConfig: SiteConfig }) {
         <li>
           <h2 className="text-base">
             {isAccountPage ? (
-              <span aria-current="page" className="font-semibold text-gcds-grayscale-800">
+              <span aria-current="page" className="font-semibold text-gcds-green-750">
                 {t("navigation.account")}
               </span>
             ) : (
@@ -45,13 +47,11 @@ export function AccountNavigation({ siteConfig }: { siteConfig: SiteConfig }) {
             )}
           </h2>
         </li>
-        <li>
-          <h2 className="text-base">
-            <a href={profileUrl} className="text-gcds-grayscale-800 underline hover:no-underline">
-              {t("navigation.profile")}
-            </a>
-          </h2>
-        </li>
+        {gcFormsLink && (
+          <li>
+            <ExternalLink href={gcFormsLink} i18nKey="gcForms" namespace="common" />
+          </li>
+        )}
       </ul>
     </nav>
   );

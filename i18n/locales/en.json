@@ -5,12 +5,14 @@
       "continue": "Continue",
       "submit": "Submit"
     },
-    "title": "Your account",
+    "title": "GC Platform",
     "required": "required",
     "errorSummary": {
       "title": "Please correct the errors on the page.",
       "itemFallback": "Please check this field."
-    }
+    },
+    "gcForms": "GC Forms",
+    "externalLinkIconLabel": " (Opens destination in a new tab.)"
   },
   "error": {
     "title": "Something went wrong"
@@ -51,8 +53,7 @@
     "navigation": {
       "title": "Account settings",
       "ariaLabel": "Account navigation",
-      "account": "Account",
-      "profile": "Profile"
+      "account": "Account"
     },
     "errors": {
       "noSession": "Your account information could not be retrieved from the session."
@@ -79,7 +80,9 @@
     "verifiedAccount": {
       "title": "Verified account",
       "email": "Email address",
-      "changeMessage": "<0>Cannot be changed</0> <1>create new account</1> or <2>contact the support team</2>"
+      "changeMessage": "<0>Cannot be changed</0> <1>create new account</1> or <2>contact the support team</2>",
+      "cannotBeChanged": "Cannot be changed",
+      "createNewAccount": "create new account"
     },
     "authentication": {
       "title": "Authentication",

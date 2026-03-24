@@ -31,6 +31,8 @@ export const VerifiedAccount = ({
     i18n: { language },
   } = useTranslation("account");
 
+  const supportLink = getSiteLink(siteConfig, "support", language);
+
   const logoutAndRedirectToRegister = async () => {
     try {
       const result = await logoutCurrentSession({ postLogoutRedirectUri: "/register" });
@@ -48,7 +50,7 @@ export const VerifiedAccount = ({
 
   return (
     <>
-      <div className={cn("rounded-2xl border-1 border-[#D1D5DB] bg-white p-6", className)}>
+      <div className={cn("rounded-2xl border border-highlight bg-white p-6", className)}>
         <div className="grid grid-cols-[1fr_auto] items-start gap-4">
           <div>
             <h3 className="mb-6">{t("verifiedAccount.title")}</h3>
@@ -57,17 +59,26 @@ export const VerifiedAccount = ({
               <em>{email}</em>
             </div>
           </div>
-          <p className="max-w-48 self-start text-right">
-            <Trans
-              i18nKey="verifiedAccount.changeMessage"
-              ns="account"
-              components={[
-                <strong key="0" />,
-                <Button key="1" theme="link" onClick={logoutAndRedirectToRegister} />,
-                <Link key="2" href={getSiteLink(siteConfig, "support", language)} />,
-              ]}
-            />
-          </p>
+          {supportLink ? (
+            <p className="max-w-48 self-start text-left">
+              <Trans
+                i18nKey="verifiedAccount.changeMessage"
+                ns="account"
+                components={[
+                  <strong key="0" />,
+                  <Button key="1" theme="link" onClick={logoutAndRedirectToRegister} />,
+                  <Link key="2" href={supportLink} />,
+                ]}
+              />
+            </p>
+          ) : (
+            <p className="max-w-48 self-start text-left">
+              <strong>{t("verifiedAccount.cannotBeChanged")}</strong>{" "}
+              <Button theme="link" onClick={logoutAndRedirectToRegister}>
+                {t("verifiedAccount.createNewAccount")}
+              </Button>
+            </p>
+          )}
         </div>
       </div>
     </>
