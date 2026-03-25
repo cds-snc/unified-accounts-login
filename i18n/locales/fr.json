@@ -5,12 +5,14 @@
       "continue": "Continuer",
       "submit": "Soumettre"
     },
-    "title": "Votre compte",
+    "title": "Plateforme GC",
     "required": "obligatoire",
     "errorSummary": {
       "title": "Veuillez corriger les erreurs sur la page.",
       "itemFallback": "Veuillez vérifier ce champ."
-    }
+    },
+    "gcForms": "Formulaires GC",
+    "externalLinkIconLabel": "  (Ouvre l'emplacement dans un nouvel onglet.)"
   },
   "error": {
     "title": "Quelque chose a mal tourné"
@@ -56,8 +58,7 @@
     "navigation": {
       "title": "Paramètres du compte",
       "ariaLabel": "Navigation du compte",
-      "account": "Compte",
-      "profile": "Profil"
+      "account": "Compte"
     },
     "errors": {
       "noSession": "Vos renseignements de compte n'ont pas pu être récupérés à partir de la session."
@@ -84,7 +85,9 @@
     "verifiedAccount": {
       "title": "Compte vérifié",
       "email": "Adresse courriel",
-      "changeMessage": "<0>Ne peut être modifié</0> <1>créer un nouveau compte</1> ou <2>contacter l'équipe de soutien</2>"
+      "changeMessage": "<0>Ne peut être modifié</0> <1>créer un nouveau compte</1> ou <2>contacter l'équipe de soutien</2>",
+      "cannotBeChanged": "Ne peut être modifié",
+      "createNewAccount": "créer un nouveau compte"
     },
     "authentication": {
       "title": "Authentification",

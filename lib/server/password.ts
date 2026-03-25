@@ -164,7 +164,7 @@ export async function sendPassword(
   const { serviceUrl } = getServiceUrlFromHeaders(_headers);
   const { t } = await serverTranslation("password");
 
-  const sessionCookie = await getSessionCookieByLoginName({
+  let sessionCookie = await getSessionCookieByLoginName({
     loginName: command.loginName,
     organization: command.organization,
   }).catch(() => {
@@ -174,63 +174,20 @@ export async function sendPassword(
   let session;
   let user: User;
   let loginSettings: LoginSettings | undefined;
+  // Capture organization from the cookie before it may be cleared, so the
+  // fallback new-session path retains the correct tenant context.
+  const cookieOrganization: string | undefined = sessionCookie?.organization;
 
-  if (!sessionCookie) {
-    const users = await listUsers({
-      serviceUrl,
-      loginName: command.loginName,
-      organizationId: command.organization,
-    });
-
-    if (users.details?.totalResult == BigInt(1) && users.result[0].userId) {
-      user = users.result[0];
-
-      const checks = create(ChecksSchema, {
-        user: { search: { case: "userId", value: users.result[0].userId } },
-        password: { password: command.checks.password?.password },
-      });
-
-      loginSettings = await getLoginSettings({
-        serviceUrl,
-        organization: command.organization,
-      });
-
-      try {
-        session = await createSessionAndUpdateCookie({
-          checks,
-          requestId: command.requestId,
-          lifetime: loginSettings?.passwordCheckLifetime,
-        });
-      } catch (error: unknown) {
-        const authFailure = await handleAuthenticationFailure(
-          error,
-          serviceUrl,
-          command.organization,
-          t
-        );
-        if (authFailure) {
-          return authFailure;
-        }
-        return { error: t("errors.couldNotCreateSessionForUser") };
-      }
-    } else {
-      // this is a fake error message to hide that the user does not even exist
-      return { error: "Could not verify password" };
-    }
-  } else {
+  if (sessionCookie) {
     loginSettings = await getLoginSettings({
       serviceUrl,
       organization: sessionCookie.organization,
     });
 
-    if (!loginSettings) {
-      return { error: "Could not load login settings" };
-    }
-
-    let lifetime = loginSettings.passwordCheckLifetime;
+    let lifetime = loginSettings?.passwordCheckLifetime;
 
     if (!lifetime || !lifetime.seconds) {
-      console.warn("No password lifetime provided, defaulting to 24 hours");
+      logMessage.warn("No password lifetime provided, defaulting to 24 hours");
       lifetime = {
         seconds: BigInt(60 * 60 * 24), // default to 24 hours
         nanos: 0,
@@ -245,6 +202,9 @@ export async function sendPassword(
         lifetime,
       });
     } catch (error: unknown) {
+      // A failed-attempts error means the password was wrong — return the
+      // auth failure directly rather than retrying, which would count as a
+      // second attempt and could lock the account sooner than intended.
       const authFailure = await handleAuthenticationFailure(
         error,
         serviceUrl,
@@ -254,24 +214,75 @@ export async function sendPassword(
       if (authFailure) {
         return authFailure;
       }
-      throw error;
-    }
 
-    if (!session?.factors?.user?.id) {
-      return { error: t("errors.couldNotCreateSessionForUser") };
+      logMessage.warn("Could not update existing session; falling back to creating a new session.");
+      // Any other error (e.g. session expired on Zitadel's side) is treated as
+      // a signal to abandon the stale cookie and create a fresh session below.
+      sessionCookie = undefined;
+      session = undefined;
     }
+  }
 
-    const userResponse = await getUserByID({
+  if (!sessionCookie) {
+    const effectiveOrganization = cookieOrganization ?? command.organization;
+
+    loginSettings = await getLoginSettings({
       serviceUrl,
-      userId: session?.factors?.user?.id,
+      organization: effectiveOrganization,
     });
 
-    if (!userResponse.user) {
-      return { error: t("errors.userNotFound") };
-    }
+    const users = await listUsers({
+      serviceUrl,
+      loginName: command.loginName,
+      organizationId: effectiveOrganization,
+    });
 
-    user = userResponse.user;
+    if (users.details?.totalResult == BigInt(1) && users.result[0].userId) {
+      user = users.result[0];
+
+      const checks = create(ChecksSchema, {
+        user: { search: { case: "userId", value: users.result[0].userId } },
+        password: { password: command.checks.password?.password },
+      });
+
+      try {
+        session = await createSessionAndUpdateCookie({
+          checks,
+          requestId: command.requestId,
+          lifetime: loginSettings?.passwordCheckLifetime,
+        });
+      } catch (error: unknown) {
+        const authFailure = await handleAuthenticationFailure(
+          error,
+          serviceUrl,
+          effectiveOrganization,
+          t
+        );
+        if (authFailure) {
+          return authFailure;
+        }
+        return { error: t("errors.couldNotCreateSessionForUser") };
+      }
+    } else {
+      // this is a fake error message to hide that the user does not even exist
+      return { error: "Could not verify password" };
+    }
   }
+
+  if (!session?.factors?.user?.id) {
+    return { error: t("errors.couldNotCreateSessionForUser") };
+  }
+
+  const userResponse = await getUserByID({
+    serviceUrl,
+    userId: session.factors.user.id,
+  });
+
+  if (!userResponse.user) {
+    return { error: t("errors.userNotFound") };
+  }
+
+  user = userResponse.user;
 
   if (!loginSettings) {
     loginSettings = await getLoginSettings({
