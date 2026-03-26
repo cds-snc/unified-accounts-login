@@ -3,7 +3,7 @@
  *--------------------------------------------*/
 import { ZITADEL_ORGANIZATION } from "@root/constants/config";
 
-export type SiteId = "dev" | "staging" | "production";
+export type SiteId = "core" | "dev" | "staging" | "production";
 export type SiteConfig = {
   id: SiteId;
   baseUrl: string;
@@ -32,6 +32,11 @@ const createLinks = (): SiteLinksConfig => {
 };
 
 const TRUSTED_DOMAINS: Record<SiteId, TrustedDomainConfig> = {
+  // TODO: Temporary fix while working with the forked repo on an unexpected domain
+  core: {
+    baseUrl: "https://idp.cdssandbox.xyz",
+    links: createLinks(),
+  },
   dev: {
     baseUrl: "http://localhost:3000",
     links: createLinks(),
